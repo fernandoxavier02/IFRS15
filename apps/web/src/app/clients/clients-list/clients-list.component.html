@@ -1,0 +1,193 @@
+<div class="clients-container">
+  <!-- Header -->
+  <div class="header-section">
+    <div class="page-title">
+      <h1>
+        👥 Clientes
+      </h1>
+      <p class="page-description">Gerencie seus clientes e contratos IFRS 15</p>
+    </div>
+    
+    <div class="header-actions">
+        <button class="btn btn-primary" (click)="addClient()" *ngIf="canCreate()">
+          ➕ Novo Cliente
+        </button>
+        
+        <button class="btn btn-secondary" (click)="exportClients()" [disabled]="loading">
+          📥 Exportar
+        </button>
+      </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-card">
+    <div class="card-content">
+      <div class="filters-row">
+        <div class="form-field search-field">
+          <label>Buscar clientes</label>
+          <input [(ngModel)]="searchTerm" 
+                 (keyup.enter)="applyFilter()"
+                 placeholder="Nome, email ou documento">
+          <span class="suffix">🔍</span>
+        </div>
+
+        <div class="form-field">
+          <label>Status</label>
+          <select [(ngModel)]="statusFilter" (change)="applyFilter()">
+            <option *ngFor="let status of statusOptions" [value]="status.value">
+              {{ status.label }}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-actions">
+          <button class="btn btn-accent" (click)="applyFilter()" [disabled]="loading">
+            🔍 Filtrar
+          </button>
+          
+          <button class="btn btn-secondary" (click)="clearFilters()">
+            ❌ Limpar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-card">
+    <div class="table-content">
+      <div class="table-container">
+        <table class="clients-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Telefone</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let client of filteredClients">
+              <td>
+                <div class="client-info">
+                  <div class="client-name">{{ client.nome }}</div>
+                  <div class="client-document">{{ client.documento }}</div>
+                </div>
+              </td>
+              <td>{{ client.email }}</td>
+              <td>{{ client.telefone }}</td>
+              <td>
+                <span class="status-badge" [ngClass]="'status-' + client.status">
+                  {{ client.status }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-icon" (click)="editClient(client)" title="Editar">
+                    ✏️
+                  </button>
+                  <button class="btn-icon" (click)="viewContracts(client)" title="Contratos">
+                    📄
+                  </button>
+                  <button class="btn-icon" (click)="changeStatus(client)" title="Alterar Status">
+                    🔄
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="loading" class="loading-container">
+        <div class="loading-spinner">Carregando...</div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading && filteredClients.length === 0" class="empty-state">
+        <p>Nenhum cliente encontrado.</p>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="pagination-container">
+        <div class="pagination-info">
+          Mostrando {{ (currentPage - 1) * pageSize + 1 }} - 
+          {{ Math.min(currentPage * pageSize, totalItems) }} de {{ totalItems }} itens
+        </div>
+        <div class="pagination-controls">
+          <button 
+            class="pagination-button"
+            [disabled]="currentPage <= 1" 
+            (click)="previousPage()">
+            ←
+          </button>
+          
+          <span class="pagination-info">
+            Página {{ currentPage }} de {{ totalPages }} ({{ totalItems }} itens)
+          </span>
+          
+          <button 
+            class="pagination-button"
+            [disabled]="currentPage >= totalPages" 
+            (click)="nextPage()">
+            →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-section" *ngIf="!loading && filteredClients.length > 0">
+    <div class="summary-cards">
+      <div class="summary-card">
+        <div class="summary-content">
+          <div class="metric">
+            <span class="metric-icon">👥</span>
+            <div class="metric-content">
+              <span class="metric-value">{{ totalItems }}</span>
+              <span class="metric-label">Total de Clientes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-content">
+          <div class="metric">
+            <span class="metric-icon">✅</span>
+            <div class="metric-content">
+              <span class="metric-value">{{ getActiveClientsCount() }}</span>
+              <span class="metric-label">Clientes Ativos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-content">
+          <div class="metric">
+            <span class="metric-icon">📄</span>
+            <div class="metric-content">
+              <span class="metric-value">{{ getTotalContracts() }}</span>
+              <span class="metric-label">Total de Contratos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-content">
+          <div class="metric">
+            <span class="metric-icon">💰</span>
+            <div class="metric-content">
+              <span class="metric-value">{{ getTotalValue() | currency:'BRL':'symbol':'1.0-0' }}</span>
+              <span class="metric-label">Valor Total</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

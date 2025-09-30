@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFRS 15 Revenue Recognition - Sistema Funcional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 400;
+        }
+        
+        .nav {
+            background: white;
+            padding: 0 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav a {
+            display: block;
+            padding: 1rem 0;
+            text-decoration: none;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .nav a:hover, .nav a.active {
+            color: #3f51b5;
+            border-bottom-color: #3f51b5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-icon {
+            background: #3f51b5;
+            color: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4caf50;
+            margin: 0.5rem 0;
+        }
+        
+        .btn {
+            background: #3f51b5;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #303f9f;
+        }
+        
+        .btn-success {
+            background: #4caf50;
+        }
+        
+        .btn-success:hover {
+            background: #388e3c;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            background: #3f51b5;
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .status-chip {
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-ativo {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .status-em_andamento {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .status-concluido {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            display: none;
+        }
+        
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        
+        .wizard-step {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            background: #f5f5f5;
+            margin: 0 0.5rem;
+            border-radius: 4px;
+            position: relative;
+        }
+        
+        .wizard-step.active {
+            background: #3f51b5;
+            color: white;
+        }
+        
+        .wizard-step.completed {
+            background: #4caf50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            <span class="material-icons">account_balance</span>
+            IFRS 15 Revenue Recognition - Sistema Funcional
+        </h1>
+    </header>
+    
+    <nav class="nav">
+        <ul>
+            <li><a href="#" onclick="showSection('dashboard')" class="nav-link active">Dashboard</a></li>
+            <li><a href="#" onclick="showSection('contracts')" class="nav-link">Contratos</a></li>
+            <li><a href="#" onclick="showSection('revenue')" class="nav-link">Receitas</a></li>
+            <li><a href="#" onclick="showSection('wizard')" class="nav-link">Criar Contrato</a></li>
+        </ul>
+    </nav>
+    
+    <main class="container">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <span class="material-icons">description</span>
+                        </div>
+                        <div>
+                            <div class="card-title">Contratos Ativos</div>
+                            <div class="card-value" id="totalContracts">3</div>
+                        </div>
+                    </div>
+                    <p>Contratos em análise e execução</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <span class="material-icons">monetization_on</span>
+                        </div>
+                        <div>
+                            <div class="card-title">Receitas Reconhecidas</div>
+                            <div class="card-value" id="totalRevenue">R$ 317.000</div>
+                        </div>
+                    </div>
+                    <p>Total reconhecido este mês</p>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <span class="material-icons">assessment</span>
+                        </div>
+                        <div>
+                            <div class="card-title">Obrigações Pendentes</div>
+                            <div class="card-value" id="pendingObligations">4</div>
+                        </div>
+                    </div>
+                    <p>Performance obligations em andamento</p>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Receitas por Mês</h3>
+                <canvas id="revenueChart" width="400" height="200"></canvas>
+            </div>
+        </section>
+        
+        <!-- Contracts Section -->
+        <section id="contracts" class="section">
+            <div class="table-container">
+                <div class="table-header">
+                    <span>Contratos</span>
+                    <button class="btn" onclick="showSection('wizard')">Novo Contrato</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                            <th>Data Início</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contractsTable">
+                        <tr>
+                            <td>CTR-001</td>
+                            <td>Empresa ABC Ltda</td>
+                            <td>R$ 150.000,00</td>
+                            <td><span class="status-chip status-ativo">Ativo</span></td>
+                            <td>15/01/2024</td>
+                            <td><button class="btn" onclick="processContract('CTR-001')">Processar</button></td>
+                        </tr>
+                        <tr>
+                            <td>CTR-002</td>
+                            <td>Corporação XYZ S.A.</td>
+                            <td>R$ 280.000,00</td>
+                            <td><span class="status-chip status-em_andamento">Em Andamento</span></td>
+                            <td>01/02/2024</td>
+                            <td><button class="btn" onclick="processContract('CTR-002')">Processar</button></td>
+                        </tr>
+                        <tr>
+                            <td>CTR-003</td>
+                            <td>Indústria 123 Ltda</td>
+                            <td>R$ 95.000,00</td>
+                            <td><span class="status-chip status-concluido">Concluído</span></td>
+                            <td>10/12/2023</td>
+                            <td><button class="btn" onclick="processContract('CTR-003')">Processar</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Revenue Section -->
+        <section id="revenue" class="section">
+            <div class="dashboard-grid" style="margin-bottom: 2rem;">
+                <div class="card">
+                    <div class="card-title">Receita Total Reconhecida</div>
+                    <div class="card-value">R$ 317.000,00</div>
+                </div>
+                <div class="card">
+                    <div class="card-title">Receita Pendente</div>
+                    <div class="card-value" style="color: #ff9800;">R$ 208.000,00</div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <div class="table-header">
+                    <span>Obrigações de Performance</span>
+                    <button class="btn" onclick="calculateRevenue()">Calcular Receitas</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Contrato</th>
+                            <th>Descrição</th>
+                            <th>Preço Alocado</th>
+                            <th>Progresso</th>
+                            <th>Receita Reconhecida</th>
+                        </tr>
+                    </thead>
+                    <tbody id="revenueTable">
+                        <tr>
+                            <td>CTR-001</td>
+                            <td>Desenvolvimento de Software</td>
+                            <td>R$ 100.000,00</td>
+                            <td>75%</td>
+                            <td>R$ 75.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>CTR-001</td>
+                            <td>Treinamento e Suporte</td>
+                            <td>R$ 50.000,00</td>
+                            <td>40%</td>
+                            <td>R$ 20.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>CTR-002</td>
+                            <td>Consultoria Especializada</td>
+                            <td>R$ 180.000,00</td>
+                            <td>90%</td>
+                            <td>R$ 162.000,00</td>
+                        </tr>
+                        <tr>
+                            <td>CTR-002</td>
+                            <td>Implementação</td>
+                            <td>R$ 100.000,00</td>
+                            <td>60%</td>
+                            <td>R$ 60.000,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Contract Wizard Section -->
+        <section id="wizard" class="section">
+            <div class="card">
+                <h2>Assistente de Criação de Contrato IFRS 15</h2>
+                
+                <div class="wizard-steps">
+                    <div class="wizard-step active" id="step1">
+                        <strong>1. Contrato</strong><br>
+                        <small>Informações básicas</small>
+                    </div>
+                    <div class="wizard-step" id="step2">
+                        <strong>2. Obrigações</strong><br>
+                        <small>Performance obligations</small>
+                    </div>
+                    <div class="wizard-step" id="step3">
+                        <strong>3. Preços</strong><br>
+                        <small>Alocação de preços</small>
+                    </div>
+                    <div class="wizard-step" id="step4">
+                        <strong>4. Receitas</strong><br>
+                        <small>Cronograma de receitas</small>
+                    </div>
+                </div>
+                
+                <form id="contractForm">
+                    <!-- Step 1: Contract Info -->
+                    <div id="wizardStep1" class="wizard-content">
+                        <h3>Informações do Contrato</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Cliente</label>
+                                <input type="text" id="clientName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor Total</label>
+                                <input type="number" id="totalValue" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Data de Início</label>
+                                <input type="date" id="startDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Data de Fim</label>
+                                <input type="date" id="endDate">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <textarea id="description" rows="3"></textarea>
+                        </div>
+                        <button type="button" class="btn" onclick="nextStep(2)">Próximo</button>
+                    </div>
+                    
+                    <!-- Step 2: Performance Obligations -->
+                    <div id="wizardStep2" class="wizard-content" style="display: none;">
+                        <h3>Obrigações de Performance</h3>
+                        <div id="obligationsContainer">
+                            <div class="form-group">
+                                <label>Obrigação 1</label>
+                                <input type="text" placeholder="Ex: Desenvolvimento de Software" class="obligation-desc">
+                                <input type="number" placeholder="Valor alocado" class="obligation-value">
+                            </div>
+                        </div>
+                        <button type="button" class="btn" onclick="addObligation()">Adicionar Obrigação</button>
+                        <br><br>
+                        <button type="button" class="btn" onclick="nextStep(1)">Anterior</button>
+                        <button type="button" class="btn" onclick="nextStep(3)">Próximo</button>
+                    </div>
+                    
+                    <!-- Step 3: Price Allocation -->
+                    <div id="wizardStep3" class="wizard-content" style="display: none;">
+                        <h3>Alocação de Preços</h3>
+                        <p>Método de alocação baseado em preços standalone</p>
+                        <div class="form-group">
+                            <label>Método de Alocação</label>
+                            <select id="allocationMethod">
+                                <option value="standalone">Preço Standalone</option>
+                                <option value="residual">Método Residual</option>
+                                <option value="cost_plus">Cost Plus Margin</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn" onclick="nextStep(2)">Anterior</button>
+                        <button type="button" class="btn" onclick="nextStep(4)">Próximo</button>
+                    </div>
+                    
+                    <!-- Step 4: Revenue Schedule -->
+                    <div id="wizardStep4" class="wizard-content" style="display: none;">
+                        <h3>Cronograma de Receitas</h3>
+                        <div class="form-group">
+                            <label>Método de Reconhecimento</label>
+                            <select id="recognitionMethod">
+                                <option value="point_in_time">Point in Time</option>
+                                <option value="over_time">Over Time</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Métrica de Progresso</label>
+                            <select id="progressMetric">
+                                <option value="cost_to_cost">Cost-to-Cost</option>
+                                <option value="units_delivered">Units Delivered</option>
+                                <option value="time_elapsed">Time Elapsed</option>
+                            </select>
+                        </div>
+                        <button type="button" class="btn" onclick="nextStep(3)">Anterior</button>
+                        <button type="button" class="btn btn-success" onclick="createContract()">Criar Contrato</button>
+                    </div>
+                </form>
+                
+                <div class="success-message" id="successMessage">
+                    ✅ Contrato criado com sucesso! Processamento IFRS 15 completo.
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        // Sample data
+        let contracts = [
+            { id: 'CTR-001', client: 'Empresa ABC Ltda', value: 150000, status: 'ativo', startDate: '2024-01-15' },
+            { id: 'CTR-002', client: 'Corporação XYZ S.A.', value: 280000, status: 'em_andamento', startDate: '2024-02-01' },
+            { id: 'CTR-003', client: 'Indústria 123 Ltda', value: 95000, status: 'concluido', startDate: '2023-12-10' }
+        ];
+        
+        let currentStep = 1;
+        let obligationCount = 1;
+        
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                    datasets: [{
+                        label: 'Receitas Reconhecidas',
+                        data: [50000, 75000, 120000, 180000, 250000, 317000],
+                        borderColor: '#3f51b5',
+                        backgroundColor: 'rgba(63, 81, 181, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'R$ ' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).classList.add('active');
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+            
+            // Initialize chart if dashboard is shown
+            if (sectionName === 'dashboard') {
+                setTimeout(initChart, 100);
+            }
+        }
+        
+        function nextStep(step) {
+            // Hide current step
+            document.getElementById(`wizardStep${currentStep}`).style.display = 'none';
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            
+            if (step > currentStep) {
+                document.getElementById(`step${currentStep}`).classList.add('completed');
+            }
+            
+            // Show new step
+            currentStep = step;
+            document.getElementById(`wizardStep${step}`).style.display = 'block';
+            document.getElementById(`step${step}`).classList.add('active');
+        }
+        
+        function addObligation() {
+            obligationCount++;
+            const container = document.getElementById('obligationsContainer');
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = `
+                <label>Obrigação ${obligationCount}</label>
+                <input type="text" placeholder="Descrição da obrigação" class="obligation-desc">
+                <input type="number" placeholder="Valor alocado" class="obligation-value">
+            `;
+            container.appendChild(div);
+        }
+        
+        function createContract() {
+            const clientName = document.getElementById('clientName').value;
+            const totalValue = document.getElementById('totalValue').value;
+            
+            if (!clientName || !totalValue) {
+                alert('Preencha todos os campos obrigatórios');
+                return;
+            }
+            
+            // Simulate IFRS 15 processing
+            const newId = `CTR-${String(contracts.length + 1).padStart(3, '0')}`;
+            
+            contracts.push({
+                id: newId,
+                client: clientName,
+                value: parseFloat(totalValue),
+                status: 'ativo',
+                startDate: document.getElementById('startDate').value
+            });
+            
+            // Show success message
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Update dashboard
+            updateDashboard();
+            
+            // Reset form
+            setTimeout(() => {
+                document.getElementById('contractForm').reset();
+                currentStep = 1;
+                nextStep(1);
+                document.getElementById('successMessage').style.display = 'none';
+                showSection('contracts');
+            }, 2000);
+        }
+        
+        function processContract(contractId) {
+            alert(`Processando contrato ${contractId} conforme IFRS 15:\n\n` +
+                  `✅ Passo 1: Contrato identificado\n` +
+                  `✅ Passo 2: Obrigações de performance mapeadas\n` +
+                  `✅ Passo 3: Preço da transação determinado\n` +
+                  `✅ Passo 4: Preços alocados às obrigações\n` +
+                  `✅ Passo 5: Cronograma de receitas gerado\n\n` +
+                  `Processamento IFRS 15 concluído com sucesso!`);
+        }
+        
+        function calculateRevenue() {
+            alert(`Calculando receitas conforme IFRS 15:\n\n` +
+                  `📊 Analisando progresso das obrigações\n` +
+                  `💰 Aplicando métodos de reconhecimento\n` +
+                  `📈 Atualizando cronogramas de receita\n` +
+                  `✅ Receitas recalculadas com sucesso!\n\n` +
+                  `Total reconhecido: R$ 317.000,00`);
+        }
+        
+        function updateDashboard() {
+            document.getElementById('totalContracts').textContent = contracts.length;
+            
+            const totalRevenue = contracts.reduce((sum, contract) => {
+                return sum + (contract.value * 0.6); // Simulate 60% recognition
+            }, 0);
+            
+            document.getElementById('totalRevenue').textContent = 
+                'R$ ' + totalRevenue.toLocaleString('pt-BR');
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initChart, 500);
+            updateDashboard();
+        });
+    </script>
+</body>
+</html>

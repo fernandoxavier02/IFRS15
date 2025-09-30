@@ -1,0 +1,70 @@
+{
+  "contractId": "CONTRACT-2024-002",
+  "tenantId": "tenant-construction-co",
+  "policyVersion": "1.0.0",
+  "effectiveDate": "2024-01-01T00:00:00Z",
+  
+  "hasCommercialSubstance": true,
+  "isEnforceable": true,
+  "enforceablePeriodMonths": 24,
+  
+  "transactionPrice": 2500000,
+  "variableConsiderationConstraint": "EXPECTED_VALUE",
+  "constraintThreshold": 0.10,
+  
+  "financingComponent": {
+    "hasSignificantFinancing": false,
+    "paymentTermsMonths": 6
+  },
+  
+  "upfrontFee": {
+    "hasUpfrontFee": false
+  },
+  
+  "performanceObligations": [
+    {
+      "id": "PO-CONSTRUCTION",
+      "description": "Building construction services",
+      "revenueRecognitionMethod": "OVER_TIME_COST_TO_COST",
+      "progressMetric": "COSTS_INCURRED",
+      "isDistinct": false,
+      "standaloneSellingPrice": 2200000,
+      "allocationWeight": 0.88,
+      "satisfactionTiming": "OVER_TIME",
+      "controlTransferIndicators": [
+        "Customer controls asset as it is created",
+        "No alternative use for the asset",
+        "Enforceable right to payment for work completed"
+      ],
+      "principalAgentRole": "PRINCIPAL"
+    },
+    {
+      "id": "PO-MATERIALS",
+      "description": "Construction materials supply",
+      "revenueRecognitionMethod": "POINT_IN_TIME",
+      "isDistinct": true,
+      "standaloneSellingPrice": 300000,
+      "allocationWeight": 0.12,
+      "satisfactionTiming": "AT_POINT_IN_TIME",
+      "controlTransferIndicators": [
+        "Physical possession transferred",
+        "Customer has legal title",
+        "Customer accepted the materials"
+      ],
+      "principalAgentRole": "PRINCIPAL"
+    }
+  ],
+  
+  "modificationTreatment": "CUMULATIVE_CATCH_UP",
+  
+  "customRules": {
+    "changeOrderThreshold": 50000,
+    "weatherDelayProvision": 0.05,
+    "qualityBonusPercentage": 0.03
+  },
+  
+  "overrides": {
+    "useInputMethodForConstruction": true,
+    "applyConstraintToVariableConsideration": true
+  }
+}

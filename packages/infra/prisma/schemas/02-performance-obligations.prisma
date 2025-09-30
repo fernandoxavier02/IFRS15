@@ -1,0 +1,76 @@
+// ============================================================================
+// IFRS 15 - PERFORMANCE OBLIGATIONS & PROMISES (Step 2: Identify Performance Obligations)
+// ============================================================================
+
+model PerformanceObligation {
+  id                      String                    @id @default(uuid())
+  tenantId                String
+  contractId              String
+  description             String
+  allocatedAmount         Decimal                   @db.Decimal(15, 2)
+  recognizedAmount        Decimal                   @default(0) @db.Decimal(15, 2)
+  isDistinct              Boolean                   @default(true)
+  satisfactionMethod      SatisfactionMethod
+  satisfactionTiming      SatisfactionTiming
+  estimatedCompletionDate DateTime?
+  completionPercentage    Decimal?                  @db.Decimal(5, 2)
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+
+  // Relations
+  tenant              Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract            Contract            @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  promises            Promise[]
+  revenueSchedules    RevenueSchedule[]
+  progressMethods     ProgressMethod[]
+  contractAssets      ContractAsset[]
+  contractLiabilities ContractLiability[]
+
+  @@map("performance_obligations")
+}
+
+model Promise {
+  id                      String      @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String?
+  promiseType             PromiseType
+  description             String
+  goodsOrServices         String
+  isDistinct              Boolean     @default(true)
+  bundleIdentifier        String?
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+
+  // Relations
+  tenant                Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation? @relation(fields: [performanceObligationId], references: [id], onDelete: SetNull)
+
+  @@map("promises")
+}
+
+// Enums for Performance Obligations
+enum SatisfactionMethod {
+  OVER_TIME
+  POINT_IN_TIME
+}
+
+enum SatisfactionTiming {
+  CONTINUOUS
+  MILESTONE_BASED
+  COMPLETION
+  DELIVERY
+  ACCEPTANCE
+  USAGE_BASED
+}
+
+enum PromiseType {
+  GOODS
+  SERVICES
+  LICENSES
+  OPTIONS
+  RIGHTS
+  WARRANTIES
+  FINANCING
+}

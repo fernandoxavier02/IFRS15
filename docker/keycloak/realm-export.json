@@ -1,0 +1,168 @@
+{
+  "id": "ifrs15",
+  "realm": "ifrs15",
+  "displayName": "IFRS 15 Revenue Recognition",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 30,
+  "defaultRoles": ["default-roles-ifrs15", "offline_access", "uma_authorization"],
+  "requiredCredentials": ["password"],
+  "otpPolicyType": "totp",
+  "otpPolicyAlgorithm": "HmacSHA1",
+  "otpPolicyInitialCounter": 0,
+  "otpPolicyDigits": 6,
+  "otpPolicyLookAheadWindow": 1,
+  "otpPolicyPeriod": 30,
+  "clients": [
+    {
+      "id": "ifrs15-api",
+      "clientId": "ifrs15-api",
+      "name": "IFRS 15 API Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "dev-client-secret",
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000", "http://localhost:4200"],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect",
+      "attributes": {
+        "saml.assertion.signature": "false",
+        "saml.multivalued.roles": "false",
+        "saml.force.post.binding": "false",
+        "saml.encrypt": "false",
+        "saml.server.signature": "false",
+        "saml.server.signature.keyinfo.ext": "false",
+        "exclude.session.state.from.auth.response": "false",
+        "saml_force_name_id_format": "false",
+        "saml.client.signature": "false",
+        "tls.client.certificate.bound.access.tokens": "false",
+        "saml.authnstatement": "false",
+        "display.on.consent.screen": "false",
+        "saml.onetimeuse.condition": "false"
+      }
+    },
+    {
+      "id": "ifrs15-web",
+      "clientId": "ifrs15-web",
+      "name": "IFRS 15 Web Client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": ["http://localhost:4200/*"],
+      "webOrigins": ["http://localhost:4200"],
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "publicClient": true,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect"
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "id": "admin_org",
+        "name": "admin_org",
+        "description": "Organization Administrator"
+      },
+      {
+        "id": "gerente_financeiro",
+        "name": "gerente_financeiro",
+        "description": "Financial Manager"
+      },
+      {
+        "id": "contabilidade",
+        "name": "contabilidade",
+        "description": "Accounting"
+      },
+      {
+        "id": "auditor_externo",
+        "name": "auditor_externo",
+        "description": "External Auditor"
+      },
+      {
+        "id": "cliente",
+        "name": "cliente",
+        "description": "Client"
+      }
+    ]
+  },
+  "users": [
+    {
+      "id": "admin-user",
+      "username": "admin@demo.com",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin@demo.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["admin_org"],
+      "attributes": {
+        "tenant_id": ["550e8400-e29b-41d4-a716-446655440000"]
+      }
+    },
+    {
+      "id": "financial-manager",
+      "username": "financeiro@demo.com",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Gerente",
+      "lastName": "Financeiro",
+      "email": "financeiro@demo.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "financeiro123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["gerente_financeiro"],
+      "attributes": {
+        "tenant_id": ["550e8400-e29b-41d4-a716-446655440000"]
+      }
+    },
+    {
+      "id": "accountant",
+      "username": "contabilidade@demo.com",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Contador",
+      "lastName": "Principal",
+      "email": "contabilidade@demo.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "contador123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["contabilidade"],
+      "attributes": {
+        "tenant_id": ["550e8400-e29b-41d4-a716-446655440000"]
+      }
+    }
+  ]
+}

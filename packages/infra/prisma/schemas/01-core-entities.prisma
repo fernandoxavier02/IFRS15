@@ -1,0 +1,209 @@
+// ============================================================================
+// IFRS 15 - CORE ENTITIES (Step 1: Identify the Contract)
+// ============================================================================
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  domain    String   @unique
+  isActive  Boolean  @default(true)
+  settings  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations - All IFRS 15 entities
+  users                           User[]
+  customers                       Customer[]
+  contracts                       Contract[]
+  contractModifications           ContractModification[]
+  performanceObligations          PerformanceObligation[]
+  promises                        Promise[]
+  transactionPrices               TransactionPrice[]
+  variableConsiderations          VariableConsideration[]
+  variableConsiderationConstraints VariableConsiderationConstraint[]
+  significantFinancingComponents  SignificantFinancingComponent[]
+  materialRights                  MaterialRight[]
+  warranties                      Warranty[]
+  principalAgentAnalyses          PrincipalAgentAnalysis[]
+  nonCashConsiderations           NonCashConsideration[]
+  foreignCurrencyTransactions     ForeignCurrencyTransaction[]
+  returnRefundOptions             ReturnRefundOption[]
+  softwareLicenses                SoftwareLicense[]
+  nonRefundableUpfrontFees        NonRefundableUpfrontFee[]
+  consignmentArrangements         ConsignmentArrangement[]
+  standalonePrices                StandalonePrice[]
+  priceAllocations                PriceAllocation[]
+  revenueSchedules                RevenueSchedule[]
+  progressMethods                 ProgressMethod[]
+  contractAssets                  ContractAsset[]
+  contractLiabilities             ContractLiability[]
+  refundLiabilities               RefundLiability[]
+  estimatedProvisions             EstimatedProvision[]
+  incrementalCosts                IncrementalCost[]
+  invoices                        Invoice[]
+  billingSchedules                BillingSchedule[]
+  receipts                        Receipt[]
+  auditTrails                     AuditTrail[]
+  policySnapshots                 PolicySnapshot[]
+
+  @@map("tenants")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  tenantId  String
+  email     String
+  name      String
+  roles     String[]
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  auditTrails AuditTrail[]
+
+  @@unique([email, tenantId])
+  @@map("users")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  email     String?
+  taxId     String?
+  address   Json?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contracts Contract[]
+
+  @@map("customers")
+}
+
+model Contract {
+  id                     String         @id @default(uuid())
+  tenantId               String
+  customerId             String
+  contractNumber         String
+  title                  String
+  description            String?
+  startDate              DateTime
+  endDate                DateTime?
+  totalValue             Decimal        @db.Decimal(15, 2)
+  currency               String         @db.Char(3)
+  status                 ContractStatus @default(DRAFT)
+  hasCommercialSubstance Boolean        @default(true)
+  isEnforceable          Boolean        @default(true)
+  enforcementPeriodStart DateTime?
+  enforcementPeriodEnd   DateTime?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+
+  // Relations
+  tenant                          Tenant                           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customer                        Customer                         @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  modifications                   ContractModification[]
+  clauses                         Clause[]
+  performanceObligations          PerformanceObligation[]
+  promises                        Promise[]
+  transactionPrices               TransactionPrice[]
+  variableConsiderations          VariableConsideration[]
+  variableConsiderationConstraints VariableConsiderationConstraint[]
+  significantFinancingComponents  SignificantFinancingComponent[]
+  materialRights                  MaterialRight[]
+  warranties                      Warranty[]
+  principalAgentAnalyses          PrincipalAgentAnalysis[]
+  nonCashConsiderations           NonCashConsideration[]
+  foreignCurrencyTransactions     ForeignCurrencyTransaction[]
+  returnRefundOptions             ReturnRefundOption[]
+  softwareLicenses                SoftwareLicense[]
+  nonRefundableUpfrontFees        NonRefundableUpfrontFee[]
+  consignmentArrangements         ConsignmentArrangement[]
+  priceAllocations                PriceAllocation[]
+  revenueSchedules                RevenueSchedule[]
+  contractAssets                  ContractAsset[]
+  contractLiabilities             ContractLiability[]
+  refundLiabilities               RefundLiability[]
+  estimatedProvisions             EstimatedProvision[]
+  incrementalCosts                IncrementalCost[]
+  invoices                        Invoice[]
+  billingSchedules                BillingSchedule[]
+
+  @@unique([contractNumber, tenantId])
+  @@map("contracts")
+}
+
+model ContractModification {
+  id                 String                     @id @default(uuid())
+  tenantId           String
+  contractId         String
+  modificationNumber String
+  description        String
+  effectiveDate      DateTime
+  modificationType   ContractModificationType
+  priceChange        Decimal?                   @db.Decimal(15, 2)
+  scopeChange        String?
+  isApproved         Boolean                    @default(false)
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@unique([modificationNumber, contractId])
+  @@map("contract_modifications")
+}
+
+model Clause {
+  id          String     @id @default(uuid())
+  contractId  String
+  clauseType  ClauseType
+  title       String
+  description String
+  terms       Json
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("clauses")
+}
+
+// Enums for Core Entities
+enum ContractStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  ON_HOLD
+  TERMINATED
+}
+
+enum ContractModificationType {
+  PRICE_CHANGE
+  SCOPE_CHANGE
+  TERM_EXTENSION
+  EARLY_TERMINATION
+  AMENDMENT
+}
+
+enum ClauseType {
+  TERMINATION
+  RESCISSION
+  ENFORCEMENT_PERIOD
+  PAYMENT_TERMS
+  DELIVERY_TERMS
+  WARRANTY
+  PENALTY
+  FORCE_MAJEURE
+  CONFIDENTIALITY
+  INTELLECTUAL_PROPERTY
+}

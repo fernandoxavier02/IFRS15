@@ -1,0 +1,71 @@
+{
+  "contractId": "CONTRACT-2024-004",
+  "tenantId": "tenant-telecom-corp",
+  "policyVersion": "1.0.0",
+  "effectiveDate": "2024-01-01T00:00:00Z",
+  
+  "hasCommercialSubstance": true,
+  "isEnforceable": true,
+  "enforceablePeriodMonths": 24,
+  
+  "transactionPrice": 2400,
+  "variableConsiderationConstraint": "CONSTRAINED_ESTIMATE",
+  "constraintThreshold": 0.05,
+  
+  "financingComponent": {
+    "hasSignificantFinancing": true,
+    "effectiveInterestRate": 0.12,
+    "paymentTermsMonths": 24
+  },
+  
+  "upfrontFee": {
+    "hasUpfrontFee": false
+  },
+  
+  "performanceObligations": [
+    {
+      "id": "PO-DEVICE",
+      "description": "Mobile device (smartphone)",
+      "revenueRecognitionMethod": "POINT_IN_TIME",
+      "isDistinct": true,
+      "standaloneSellingPrice": 800,
+      "allocationWeight": 0.33,
+      "satisfactionTiming": "AT_POINT_IN_TIME",
+      "controlTransferIndicators": [
+        "Physical possession transferred",
+        "Customer has legal title",
+        "Customer accepted the device"
+      ],
+      "principalAgentRole": "PRINCIPAL"
+    },
+    {
+      "id": "PO-SERVICE",
+      "description": "Mobile service plan",
+      "revenueRecognitionMethod": "OVER_TIME_INPUT",
+      "progressMetric": "TIME_ELAPSED",
+      "isDistinct": true,
+      "standaloneSellingPrice": 1600,
+      "allocationWeight": 0.67,
+      "satisfactionTiming": "OVER_TIME",
+      "controlTransferIndicators": [
+        "Customer receives and consumes benefits simultaneously",
+        "Stand-ready obligation to provide service"
+      ],
+      "principalAgentRole": "PRINCIPAL",
+      "warrantyClassification": "ASSURANCE_WARRANTY"
+    }
+  ],
+  
+  "modificationTreatment": "PROSPECTIVE",
+  
+  "customRules": {
+    "deviceSubsidyAmount": 200,
+    "earlyTerminationFee": 350,
+    "loyaltyPointsValue": 0.01
+  },
+  
+  "overrides": {
+    "separateDeviceAndService": true,
+    "applyFinancingToDevice": true
+  }
+}

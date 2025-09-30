@@ -1,0 +1,29 @@
+{
+  "name": "@ifrs15/infra",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "tsx src/seed.ts",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@ifrs15/shared": "workspace:*",
+    "@ifrs15/domain": "workspace:*",
+    "@prisma/client": "^5.7.0",
+    "bcryptjs": "^2.4.3"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "~18.16.9",
+    "prisma": "^5.7.0",
+    "tsx": "^4.6.0",
+    "typescript": "~5.2.2"
+  }
+}

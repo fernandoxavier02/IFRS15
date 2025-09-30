@@ -1,0 +1,284 @@
+// ============================================================================
+// IFRS 15 - TRANSACTION PRICE COMPONENTS (Step 3: Determine Transaction Price)
+// ============================================================================
+
+model TransactionPrice {
+  id                  String   @id @default(uuid())
+  tenantId            String
+  contractId          String
+  baseAmount          Decimal  @db.Decimal(15, 2)
+  currency            String   @db.Char(3)
+  variableAmount      Decimal? @db.Decimal(15, 2)
+  constrainedAmount   Decimal? @db.Decimal(15, 2)
+  financingAdjustment Decimal? @db.Decimal(15, 2)
+  nonCashAdjustment   Decimal? @db.Decimal(15, 2)
+  totalAmount         Decimal  @db.Decimal(15, 2)
+  calculationDate     DateTime @default(now())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("transaction_prices")
+}
+
+model VariableConsideration {
+  id                    String                        @id @default(uuid())
+  tenantId              String
+  contractId            String
+  description           String
+  estimationMethod      VariableConsiderationMethod
+  expectedValue         Decimal?                      @db.Decimal(15, 2)
+  mostLikelyAmount      Decimal?                      @db.Decimal(15, 2)
+  constraintApplied     Boolean                       @default(false)
+  constraintReason      String?
+  probabilityAssessment Json?
+  createdAt             DateTime                      @default(now())
+  updatedAt             DateTime                      @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("variable_considerations")
+}
+
+model VariableConsiderationConstraint {
+  id                   String    @id @default(uuid())
+  tenantId             String
+  contractId           String
+  constraintType       String
+  description          String
+  constrainedAmount    Decimal   @db.Decimal(15, 2)
+  reasonForConstraint  String
+  reassessmentTrigger  String?
+  nextReassessmentDate DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("variable_consideration_constraints")
+}
+
+model SignificantFinancingComponent {
+  id               String   @id @default(uuid())
+  tenantId         String
+  contractId       String
+  description      String
+  interestRate     Decimal  @db.Decimal(8, 4)
+  presentValue     Decimal  @db.Decimal(15, 2)
+  nominalValue     Decimal  @db.Decimal(15, 2)
+  financingPeriod  Int      // months
+  adjustmentAmount Decimal  @db.Decimal(15, 2)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("significant_financing_components")
+}
+
+model MaterialRight {
+  id                      String   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  description             String
+  rightType               String
+  expectedExercise        Boolean  @default(false)
+  exerciseProbability     Decimal? @db.Decimal(5, 2)
+  standalonePriceEstimate Decimal? @db.Decimal(15, 2)
+  allocationMethod        String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("material_rights")
+}
+
+model Warranty {
+  id            String       @id @default(uuid())
+  tenantId      String
+  contractId    String
+  warrantyType  WarrantyType
+  description   String
+  period        Int          // months
+  coverage      String
+  isAssurance   Boolean      @default(true)
+  serviceAmount Decimal?     @db.Decimal(15, 2)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("warranties")
+}
+
+model PrincipalAgentAnalysis {
+  id                String             @id @default(uuid())
+  tenantId          String
+  contractId        String
+  analysisType      PrincipalAgentType
+  description       String
+  controlIndicators Json
+  conclusion        String
+  grossAmount       Decimal?           @db.Decimal(15, 2)
+  netAmount         Decimal?           @db.Decimal(15, 2)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("principal_agent_analyses")
+}
+
+model NonCashConsideration {
+  id                String   @id @default(uuid())
+  tenantId          String
+  contractId        String
+  description       String
+  considerationType String
+  fairValue         Decimal  @db.Decimal(15, 2)
+  valuationMethod   String
+  valuationDate     DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("non_cash_considerations")
+}
+
+model ForeignCurrencyTransaction {
+  id               String   @id @default(uuid())
+  tenantId         String
+  contractId       String
+  originalCurrency String   @db.Char(3)
+  originalAmount   Decimal  @db.Decimal(15, 2)
+  exchangeRate     Decimal  @db.Decimal(10, 6)
+  functionalAmount Decimal  @db.Decimal(15, 2)
+  transactionDate  DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("foreign_currency_transactions")
+}
+
+model ReturnRefundOption {
+  id                String   @id @default(uuid())
+  tenantId          String
+  contractId        String
+  optionType        String
+  description       String
+  returnPeriod      Int?     // days
+  refundAmount      Decimal? @db.Decimal(15, 2)
+  returnProbability Decimal? @db.Decimal(5, 2)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("return_refund_options")
+}
+
+model SoftwareLicense {
+  id            String              @id @default(uuid())
+  tenantId      String
+  contractId    String
+  licenseType   SoftwareLicenseType
+  description   String
+  rightType     String              // right_to_use vs right_to_access
+  functionality String
+  isDistinct    Boolean             @default(true)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("software_licenses")
+}
+
+model NonRefundableUpfrontFee {
+  id                 String   @id @default(uuid())
+  tenantId           String
+  contractId         String
+  feeType            String
+  description        String
+  amount             Decimal  @db.Decimal(15, 2)
+  allocationMethod   String
+  recognitionPattern String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("non_refundable_upfront_fees")
+}
+
+model ConsignmentArrangement {
+  id                 String   @id @default(uuid())
+  tenantId           String
+  contractId         String
+  description        String
+  controlTransfer    String
+  inventoryLocation  String
+  recognitionTrigger String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("consignment_arrangements")
+}
+
+// Enums for Transaction Price
+enum VariableConsiderationMethod {
+  EXPECTED_VALUE
+  MOST_LIKELY_AMOUNT
+}
+
+enum WarrantyType {
+  ASSURANCE
+  SERVICE
+  COMBINED
+}
+
+enum PrincipalAgentType {
+  PRINCIPAL
+  AGENT
+  MIXED
+}
+
+enum SoftwareLicenseType {
+  PERPETUAL
+  TERM
+  SUBSCRIPTION
+  USAGE_BASED
+}

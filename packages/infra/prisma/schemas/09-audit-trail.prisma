@@ -1,0 +1,62 @@
+// ============================================================================
+// IFRS 15 - AUDIT TRAIL (Auditoria)
+// ============================================================================
+
+model AuditTrail {
+  id          String      @id @default(uuid())
+  tenantId    String
+  userId      String?
+  action      AuditAction
+  entityType  String
+  entityId    String
+  oldValues   Json?
+  newValues   Json?
+  ipAddress   String?
+  userAgent   String?
+  sessionId   String?
+  timestamp   DateTime    @default(now())
+  createdAt   DateTime    @default(now())
+
+  // Relations
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_trails")
+}
+
+model PolicySnapshot {
+  id             String   @id @default(uuid())
+  tenantId       String
+  policyType     String
+  policyName     String
+  version        String
+  content        Json
+  effectiveDate  DateTime
+  expirationDate DateTime?
+  isActive       Boolean  @default(true)
+  createdBy      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([policyType, policyName, version, tenantId])
+  @@map("policy_snapshots")
+}
+
+// Enums for Audit Trail
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  VIEW
+  EXPORT
+  IMPORT
+  APPROVE
+  REJECT
+  SUBMIT
+  CANCEL
+  REVERSE
+  ADJUST
+}

@@ -1,0 +1,603 @@
+// ============================================================================
+// IFRS 15 REVENUE RECOGNITION - SQLITE VERSION
+// Standalone schema for local development without Docker
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// ============================================================================
+// CORE ENTITIES - Step 1: Identify the Contract
+// ============================================================================
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  domain    String   @unique
+  isActive  Boolean  @default(true)
+  settings  String   @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations - All IFRS 15 entities
+  users                            User[]
+  customers                        Customer[]
+  contracts                        Contract[]
+  contractModifications            ContractModification[]
+  performanceObligations           PerformanceObligation[]
+  promises                         Promise[]
+  transactionPrices                TransactionPrice[]
+  variableConsiderations           VariableConsideration[]
+  variableConsiderationConstraints VariableConsiderationConstraint[]
+  significantFinancingComponents   SignificantFinancingComponent[]
+  materialRights                   MaterialRight[]
+  warranties                       Warranty[]
+  principalAgentAnalyses           PrincipalAgentAnalysis[]
+  nonCashConsiderations            NonCashConsideration[]
+  foreignCurrencyTransactions      ForeignCurrencyTransaction[]
+  returnRefundOptions              ReturnRefundOption[]
+  softwareLicenses                 SoftwareLicense[]
+  nonRefundableUpfrontFees         NonRefundableUpfrontFee[]
+  consignmentArrangements          ConsignmentArrangement[]
+  standalonePrices                 StandalonePrice[]
+  priceAllocations                 PriceAllocation[]
+  revenueSchedules                 RevenueSchedule[]
+  contractAssets                   ContractAsset[]
+  contractLiabilities              ContractLiability[]
+  revenueRecognitionEntries        RevenueRecognitionEntry[]
+  auditLogs                        AuditLog[]
+
+  @@map("tenants")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  tenantId  String
+  email     String   @unique
+  name      String
+  role      String   @default("cliente")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tenant    Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  auditLogs AuditLog[]
+
+  @@map("users")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  email     String?
+  phone     String?
+  address   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contracts Contract[]
+
+  @@map("customers")
+}
+
+model Contract {
+  id                String   @id @default(uuid())
+  tenantId          String
+  customerId        String
+  contractNumber    String   @unique
+  title             String
+  description       String?
+  contractDate      DateTime
+  startDate         DateTime
+  endDate           DateTime?
+  totalValue        Float
+  currency          String   @default("BRL")
+  status            String   @default("draft")
+  isEnforceable     Boolean  @default(true)
+  hasCommercialSubstance Boolean @default(true)
+  collectibilityAssessment String @default("probable")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant                           Tenant                            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customer                         Customer                          @relation(fields: [customerId], references: [id])
+  performanceObligations           PerformanceObligation[]
+  contractModifications            ContractModification[]
+  transactionPrices                TransactionPrice[]
+  variableConsiderations           VariableConsideration[]
+  variableConsiderationConstraints VariableConsiderationConstraint[]
+  significantFinancingComponents   SignificantFinancingComponent[]
+  materialRights                   MaterialRight[]
+  warranties                       Warranty[]
+  principalAgentAnalyses           PrincipalAgentAnalysis[]
+  nonCashConsiderations            NonCashConsideration[]
+  foreignCurrencyTransactions      ForeignCurrencyTransaction[]
+  returnRefundOptions              ReturnRefundOption[]
+  softwareLicenses                 SoftwareLicense[]
+  nonRefundableUpfrontFees         NonRefundableUpfrontFee[]
+  consignmentArrangements          ConsignmentArrangement[]
+  priceAllocations                 PriceAllocation[]
+  revenueSchedules                 RevenueSchedule[]
+  contractAssets                   ContractAsset[]
+  contractLiabilities              ContractLiability[]
+  revenueRecognitionEntries        RevenueRecognitionEntry[]
+
+  @@map("contracts")
+}
+
+// ============================================================================
+// Step 2: Identify Performance Obligations
+// ============================================================================
+
+model PerformanceObligation {
+  id                    String   @id @default(uuid())
+  tenantId              String
+  contractId            String
+  description           String
+  isDistinct            Boolean  @default(true)
+  isSeparatelyIdentifiable Boolean @default(true)
+  allocatedPrice        Float?
+  recognitionMethod     String   @default("point_in_time")
+  progressMeasurement   String?
+  estimatedCost         Float?
+  actualCost            Float?
+  percentComplete       Float?   @default(0)
+  status                String   @default("not_started")
+  startDate             DateTime?
+  completionDate        DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  promises              Promise[]
+  standalonePrices      StandalonePrice[]
+  priceAllocations      PriceAllocation[]
+  revenueSchedules      RevenueSchedule[]
+  contractAssets        ContractAsset[]
+  contractLiabilities   ContractLiability[]
+  revenueRecognitionEntries RevenueRecognitionEntry[]
+
+  @@map("performance_obligations")
+}
+
+model Promise {
+  id                   String   @id @default(uuid())
+  tenantId             String
+  performanceObligationId String
+  description          String
+  type                 String
+  isExplicit           Boolean  @default(true)
+  isImplicit           Boolean  @default(false)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("promises")
+}
+
+// ============================================================================
+// Step 3: Determine Transaction Price
+// ============================================================================
+
+model TransactionPrice {
+  id                String   @id @default(uuid())
+  tenantId          String
+  contractId        String
+  basePrice         Float
+  adjustedPrice     Float
+  currency          String   @default("BRL")
+  calculationDate   DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("transaction_prices")
+}
+
+model VariableConsideration {
+  id                    String   @id @default(uuid())
+  tenantId              String
+  contractId            String
+  type                  String
+  description           String
+  estimatedAmount       Float
+  constraintAmount      Float?
+  estimationMethod      String
+  probabilityAssessment String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("variable_considerations")
+}
+
+model VariableConsiderationConstraint {
+  id                       String   @id @default(uuid())
+  tenantId                 String
+  contractId               String
+  constraintType           String
+  constraintAmount         Float
+  reasonForConstraint      String
+  reassessmentDate         DateTime?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("variable_consideration_constraints")
+}
+
+model SignificantFinancingComponent {
+  id                String   @id @default(uuid())
+  tenantId          String
+  contractId        String
+  hasSignificantFinancing Boolean @default(false)
+  interestRate      Float?
+  presentValue      Float?
+  futureValue       Float?
+  adjustmentAmount  Float?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("significant_financing_components")
+}
+
+// ============================================================================
+// Step 4: Allocate Transaction Price
+// ============================================================================
+
+model StandalonePrice {
+  id                      String   @id @default(uuid())
+  tenantId                String
+  performanceObligationId String
+  price                   Float
+  method                  String
+  source                  String?
+  adjustments             String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("standalone_prices")
+}
+
+model PriceAllocation {
+  id                      String   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String
+  allocatedAmount         Float
+  allocationMethod        String
+  allocationPercentage    Float
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract              @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("price_allocations")
+}
+
+// ============================================================================
+// Step 5: Recognize Revenue
+// ============================================================================
+
+model RevenueSchedule {
+  id                      String   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String
+  scheduledDate           DateTime
+  scheduledAmount         Float
+  recognizedAmount        Float?
+  status                  String   @default("scheduled")
+  recognitionMethod       String
+  progressPercentage      Float?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract              @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("revenue_schedules")
+}
+
+model ContractAsset {
+  id                      String   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String
+  amount                  Float
+  description             String?
+  recognitionDate         DateTime
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract              @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("contract_assets")
+}
+
+model ContractLiability {
+  id                      String   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String
+  amount                  Float
+  description             String?
+  deferralDate            DateTime
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract              @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("contract_liabilities")
+}
+
+model RevenueRecognitionEntry {
+  id                      String   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String
+  entryDate               DateTime
+  amount                  Float
+  description             String?
+  journalEntry            String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract              @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("revenue_recognition_entries")
+}
+
+// ============================================================================
+// SPECIALIZED IFRS 15 ENTITIES
+// ============================================================================
+
+model MaterialRight {
+  id                String   @id @default(uuid())
+  tenantId          String
+  contractId        String
+  description       String
+  estimatedValue    Float
+  exercisePeriod    String
+  exercisePrice     Float?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("material_rights")
+}
+
+model Warranty {
+  id          String   @id @default(uuid())
+  tenantId    String
+  contractId  String
+  type        String
+  description String
+  period      String
+  coverage    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("warranties")
+}
+
+model PrincipalAgentAnalysis {
+  id                String   @id @default(uuid())
+  tenantId          String
+  contractId        String
+  role              String
+  controlIndicators String
+  conclusion        String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("principal_agent_analyses")
+}
+
+model NonCashConsideration {
+  id           String   @id @default(uuid())
+  tenantId     String
+  contractId   String
+  description  String
+  fairValue    Float
+  measurement  String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("non_cash_considerations")
+}
+
+model ForeignCurrencyTransaction {
+  id               String   @id @default(uuid())
+  tenantId         String
+  contractId       String
+  originalCurrency String
+  originalAmount   Float
+  exchangeRate     Float
+  functionalAmount Float
+  transactionDate  DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("foreign_currency_transactions")
+}
+
+model ReturnRefundOption {
+  id          String   @id @default(uuid())
+  tenantId    String
+  contractId  String
+  type        String
+  description String
+  terms       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("return_refund_options")
+}
+
+model SoftwareLicense {
+  id           String   @id @default(uuid())
+  tenantId     String
+  contractId   String
+  licenseType  String
+  nature       String
+  restrictions String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("software_licenses")
+}
+
+model NonRefundableUpfrontFee {
+  id          String   @id @default(uuid())
+  tenantId    String
+  contractId  String
+  amount      Float
+  description String
+  treatment   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("non_refundable_upfront_fees")
+}
+
+model ConsignmentArrangement {
+  id          String   @id @default(uuid())
+  tenantId    String
+  contractId  String
+  description String
+  terms       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("consignment_arrangements")
+}
+
+// ============================================================================
+// CONTRACT MODIFICATIONS
+// ============================================================================
+
+model ContractModification {
+  id                 String   @id @default(uuid())
+  tenantId           String
+  contractId         String
+  modificationDate   DateTime
+  description        String
+  changeInPrice      Float?
+  changeInScope      String?
+  accountingTreatment String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("contract_modifications")
+}
+
+// ============================================================================
+// AUDIT AND COMPLIANCE
+// ============================================================================
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  tenantId  String
+  userId    String?
+  action    String
+  entity    String
+  entityId  String
+  oldValues String?
+  newValues String?
+  timestamp DateTime @default(now())
+
+  // Relations
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User?  @relation(fields: [userId], references: [id])
+
+  @@map("audit_logs")
+}

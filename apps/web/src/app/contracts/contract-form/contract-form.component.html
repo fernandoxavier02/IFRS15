@@ -1,0 +1,251 @@
+<div class="contract-form-container">
+  <form [formGroup]="contractForm" (ngSubmit)="onSubmit()">
+    
+    <!-- Header -->
+    <div class="form-header">
+      <h2 mat-dialog-title>
+        <mat-icon>{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+        {{ isEditMode ? 'Editar Contrato' : 'Novo Contrato' }}
+      </h2>
+      <p class="form-subtitle">
+        {{ isEditMode ? 'Atualize as informações do contrato' : 'Preencha os dados para criar um novo contrato IFRS 15' }}
+      </p>
+    </div>
+
+    <mat-dialog-content class="form-content">
+      
+      <!-- Basic Information -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Informações Básicas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Número do Contrato</mat-label>
+              <input matInput formControlName="numero" placeholder="CTR-2024-001">
+              <mat-icon matSuffix matTooltip="Identificador único do contrato">info</mat-icon>
+              <mat-error>{{ getErrorMessage('numero') }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status">
+                <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+                  {{ status.label }}
+                </mat-option>
+              </mat-select>
+              <mat-error>{{ getErrorMessage('status') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field-full">
+              <mat-label>Cliente</mat-label>
+              <input matInput formControlName="cliente" placeholder="Nome da empresa cliente">
+              <mat-icon matSuffix matTooltip="Nome ou razão social do cliente">business</mat-icon>
+              <mat-error>{{ getErrorMessage('cliente') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field-full">
+              <mat-label>Descrição do Contrato</mat-label>
+              <textarea matInput formControlName="descricao" rows="3" 
+                        placeholder="Descreva o objeto do contrato e principais obrigações"></textarea>
+              <mat-error>{{ getErrorMessage('descricao') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Data de Início</mat-label>
+              <input matInput [matDatepicker]="startPicker" formControlName="dataInicio">
+              <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+              <mat-error>{{ getErrorMessage('dataInicio') }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Data de Fim</mat-label>
+              <input matInput [matDatepicker]="endPicker" formControlName="dataFim">
+              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+              <mat-error>{{ getErrorMessage('dataFim') }}</mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Valor Total</mat-label>
+              <input matInput type="number" formControlName="valor" placeholder="0.00">
+              <span matPrefix>R$ </span>
+              <mat-icon matSuffix matTooltip="Preço de transação total do contrato">monetization_on</mat-icon>
+              <mat-error>{{ getErrorMessage('valor') }}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Moeda</mat-label>
+              <mat-select formControlName="moeda">
+                <mat-option value="BRL">Real (BRL)</mat-option>
+                <mat-option value="USD">Dólar (USD)</mat-option>
+                <mat-option value="EUR">Euro (EUR)</mat-option>
+              </mat-select>
+              <mat-error>{{ getErrorMessage('moeda') }}</mat-error>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Performance Obligations -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>
+            Performance Obligations
+            <mat-chip class="po-count">{{ performanceObligations.length }}</mat-chip>
+          </mat-card-title>
+          <mat-card-subtitle>
+            Identifique as obrigações de performance distintas do contrato
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          
+          <!-- Value Validation Alert -->
+          <mat-card *ngIf="isValueMismatch()" class="validation-alert warn">
+            <mat-card-content>
+              <div class="alert-content">
+                <mat-icon>warning</mat-icon>
+                <div>
+                  <strong>Divergência de Valores</strong>
+                  <p>
+                    Valor do contrato: {{ contractForm.get('valor')?.value | currency:'BRL':'symbol':'1.2-2' }} | 
+                    Total das POs: {{ getTotalPOValue() | currency:'BRL':'symbol':'1.2-2' }}
+                  </p>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+
+          <div formArrayName="performanceObligations">
+            <div *ngFor="let po of performanceObligations.controls; let i = index" 
+                 [formGroupName]="i" class="po-item">
+              
+              <div class="po-header">
+                <h4>Performance Obligation {{ i + 1 }}</h4>
+                <button type="button" mat-icon-button color="warn" 
+                        (click)="removePerformanceObligation(i)"
+                        [disabled]="performanceObligations.length <= 1"
+                        matTooltip="Remover PO">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+
+              <div class="po-content">
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="form-field-full">
+                    <mat-label>Descrição da Obrigação</mat-label>
+                    <input matInput formControlName="descricao" 
+                           placeholder="Ex: Licença de software, Implementação, Suporte">
+                    <mat-error>{{ getErrorMessage('descricao', po) }}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Valor Alocado</mat-label>
+                    <input matInput type="number" formControlName="valor" placeholder="0.00">
+                    <span matPrefix>R$ </span>
+                    <mat-error>{{ getErrorMessage('valor', po) }}</mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Método de Reconhecimento</mat-label>
+                    <mat-select formControlName="metodoReconhecimento">
+                      <mat-option *ngFor="let method of reconhecimentoMethods" [value]="method.value">
+                        {{ method.label }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix matTooltip="Conforme IFRS 15 - critérios de transferência de controle">help</mat-icon>
+                    <mat-error>{{ getErrorMessage('metodoReconhecimento', po) }}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row">
+                  <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Data de Início</mat-label>
+                    <input matInput [matDatepicker]="poStartPicker" formControlName="dataInicio">
+                    <mat-datepicker-toggle matSuffix [for]="poStartPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #poStartPicker></mat-datepicker>
+                    <mat-error>{{ getErrorMessage('dataInicio', po) }}</mat-error>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Data de Fim</mat-label>
+                    <input matInput [matDatepicker]="poEndPicker" formControlName="dataFim">
+                    <mat-datepicker-toggle matSuffix [for]="poEndPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #poEndPicker></mat-datepicker>
+                    <mat-error>{{ getErrorMessage('dataFim', po) }}</mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="form-row" *ngIf="isEditMode">
+                  <mat-form-field appearance="outline" class="form-field">
+                    <mat-label>Progresso (%)</mat-label>
+                    <input matInput type="number" formControlName="progresso" min="0" max="100">
+                    <span matSuffix>%</span>
+                    <mat-error>{{ getErrorMessage('progresso', po) }}</mat-error>
+                  </mat-form-field>
+                  
+                  <div class="progress-visual">
+                    <mat-progress-bar mode="determinate" 
+                                      [value]="po.get('progresso')?.value || 0">
+                    </mat-progress-bar>
+                    <span class="progress-label">
+                      {{ po.get('progresso')?.value || 0 }}% concluído
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="po-actions">
+            <button type="button" mat-stroked-button (click)="addPerformanceObligation()">
+              <mat-icon>add</mat-icon>
+              Adicionar Performance Obligation
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Additional Information -->
+      <mat-card class="form-section">
+        <mat-card-header>
+          <mat-card-title>Informações Adicionais</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field appearance="outline" class="form-field-full">
+            <mat-label>Observações</mat-label>
+            <textarea matInput formControlName="observacoes" rows="4" 
+                      placeholder="Informações adicionais, considerações especiais, etc."></textarea>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+    </mat-dialog-content>
+
+    <!-- Actions -->
+    <mat-dialog-actions class="form-actions">
+      <button type="button" mat-button (click)="onCancel()" [disabled]="loading">
+        Cancelar
+      </button>
+      
+      <button type="submit" mat-raised-button color="primary" [disabled]="loading || contractForm.invalid">
+        <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+        <mat-icon *ngIf="!loading">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+        {{ loading ? 'Salvando...' : (isEditMode ? 'Atualizar' : 'Criar Contrato') }}
+      </button>
+    </mat-dialog-actions>
+
+  </form>
+</div>

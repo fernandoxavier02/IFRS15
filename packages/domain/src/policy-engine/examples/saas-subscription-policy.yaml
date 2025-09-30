@@ -1,0 +1,88 @@
+# ============================================================================
+# IFRS 15 POLICY EXAMPLE - SAAS SUBSCRIPTION CONTRACT
+# ============================================================================
+# This example demonstrates a SaaS subscription with material rights,
+# professional services, and variable consideration
+
+contractId: "CONTRACT-2024-003"
+tenantId: "tenant-saas-provider"
+policyVersion: "1.0.0"
+effectiveDate: "2024-01-01T00:00:00Z"
+
+# Contract-level parameters
+hasCommercialSubstance: true
+isEnforceable: true
+enforceablePeriodMonths: 12
+
+# Transaction price parameters
+transactionPrice: 120000
+variableConsiderationConstraint: "MOST_LIKELY_AMOUNT"
+constraintThreshold: 0.03
+
+# Financing and timing
+financingComponent:
+  hasSignificantFinancing: false
+  paymentTermsMonths: 1
+
+upfrontFee:
+  hasUpfrontFee: true
+  amount: 5000
+  treatmentMethod: "ALLOCATE"
+  amortizationPeriodMonths: 12
+
+# Performance obligations
+performanceObligations:
+  - id: "PO-SAAS-PLATFORM"
+    description: "SaaS platform access (right to access)"
+    revenueRecognitionMethod: "OVER_TIME_INPUT"
+    progressMetric: "TIME_ELAPSED"
+    isDistinct: true
+    standaloneSellingPrice: 100000
+    allocationWeight: 0.83
+    satisfactionTiming: "OVER_TIME"
+    controlTransferIndicators:
+      - "Customer receives and consumes benefits simultaneously"
+      - "Stand-ready obligation to provide access"
+    licenseType: "RIGHT_TO_ACCESS"
+    principalAgentRole: "PRINCIPAL"
+
+  - id: "PO-ONBOARDING"
+    description: "Onboarding and training services"
+    revenueRecognitionMethod: "OVER_TIME_OUTPUT"
+    progressMetric: "MILESTONES_ACHIEVED"
+    isDistinct: true
+    standaloneSellingPrice: 15000
+    allocationWeight: 0.125
+    satisfactionTiming: "OVER_TIME"
+    controlTransferIndicators:
+      - "Customer receives and consumes benefits"
+      - "Services have no alternative use"
+    principalAgentRole: "PRINCIPAL"
+
+  - id: "PO-RENEWAL-OPTION"
+    description: "Material right for renewal discount"
+    revenueRecognitionMethod: "OVER_TIME_INPUT"
+    progressMetric: "TIME_ELAPSED"
+    isDistinct: true
+    allocationWeight: 0.045
+    satisfactionTiming: "OVER_TIME"
+    principalAgentRole: "PRINCIPAL"
+    materialRight:
+      hasMaterialRight: true
+      optionExerciseProbability: 0.85
+      standaloneSellingPrice: 5400
+      discountPercentage: 0.20
+
+# Modification handling
+modificationTreatment: "PROSPECTIVE"
+
+# Custom rules and overrides
+customRules:
+  usageBasedPricing: true
+  tierUpgradeDiscount: 0.10
+  annualPaymentDiscount: 0.08
+  churnRateAssumption: 0.15
+
+overrides:
+  recognizeSetupFeeOverTime: true
+  allocateMaterialRightValue: true

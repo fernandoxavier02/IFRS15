@@ -1,0 +1,90 @@
+# ============================================================================
+# IFRS 15 POLICY EXAMPLE - SOFTWARE LICENSE CONTRACT
+# ============================================================================
+# This example demonstrates a software licensing contract with multiple
+# performance obligations including license, implementation, and support
+
+contractId: "CONTRACT-2024-001"
+tenantId: "tenant-acme-corp"
+policyVersion: "1.0.0"
+effectiveDate: "2024-01-01T00:00:00Z"
+
+# Contract-level parameters
+hasCommercialSubstance: true
+isEnforceable: true
+enforceablePeriodMonths: 36
+
+# Transaction price parameters
+transactionPrice: 500000
+variableConsiderationConstraint: "CONSTRAINED_ESTIMATE"
+constraintThreshold: 0.05
+
+# Financing and timing
+financingComponent:
+  hasSignificantFinancing: true
+  effectiveInterestRate: 0.08
+  discountRate: 0.06
+  paymentTermsMonths: 12
+
+upfrontFee:
+  hasUpfrontFee: true
+  amount: 50000
+  treatmentMethod: "ALLOCATE"
+  amortizationPeriodMonths: 36
+
+# Performance obligations
+performanceObligations:
+  - id: "PO-LICENSE"
+    description: "Software license (right to use)"
+    revenueRecognitionMethod: "POINT_IN_TIME"
+    isDistinct: true
+    standaloneSellingPrice: 300000
+    allocationWeight: 0.60
+    satisfactionTiming: "AT_POINT_IN_TIME"
+    controlTransferIndicators:
+      - "Customer has right to use software"
+      - "License key delivered"
+      - "Software accessible"
+    licenseType: "RIGHT_TO_USE"
+    principalAgentRole: "PRINCIPAL"
+
+  - id: "PO-IMPLEMENTATION"
+    description: "Implementation and customization services"
+    revenueRecognitionMethod: "OVER_TIME_COST_TO_COST"
+    progressMetric: "COSTS_INCURRED"
+    isDistinct: true
+    standaloneSellingPrice: 150000
+    allocationWeight: 0.30
+    satisfactionTiming: "OVER_TIME"
+    controlTransferIndicators:
+      - "Customer receives and consumes benefits"
+      - "Work performed on customer's asset"
+      - "No alternative use for services"
+    principalAgentRole: "PRINCIPAL"
+
+  - id: "PO-SUPPORT"
+    description: "Technical support and maintenance"
+    revenueRecognitionMethod: "OVER_TIME_INPUT"
+    progressMetric: "TIME_ELAPSED"
+    isDistinct: true
+    standaloneSellingPrice: 50000
+    allocationWeight: 0.10
+    satisfactionTiming: "OVER_TIME"
+    controlTransferIndicators:
+      - "Stand-ready obligation"
+      - "Customer receives benefits over time"
+    warrantyClassification: "SERVICE_WARRANTY"
+    principalAgentRole: "PRINCIPAL"
+
+# Modification handling
+modificationTreatment: "PROSPECTIVE"
+
+# Custom rules and overrides
+customRules:
+  earlyPaymentDiscount: 0.02
+  volumeDiscountThreshold: 1000000
+  renewalRightDiscount: 0.15
+
+overrides:
+  manualAllocationAdjustment: false
+  forcePointInTimeRecognition: false

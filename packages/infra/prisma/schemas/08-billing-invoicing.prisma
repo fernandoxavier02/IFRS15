@@ -1,0 +1,113 @@
+// ============================================================================
+// IFRS 15 - BILLING & INVOICING (Faturamento/Cobrança)
+// ============================================================================
+
+model Invoice {
+  id             String        @id @default(uuid())
+  tenantId       String
+  contractId     String
+  invoiceNumber  String
+  description    String?
+  amount         Decimal       @db.Decimal(15, 2)
+  currency       String        @db.Char(3)
+  issueDate      DateTime
+  dueDate        DateTime
+  paidDate       DateTime?
+  status         InvoiceStatus @default(PENDING)
+  taxAmount      Decimal?      @db.Decimal(15, 2)
+  discountAmount Decimal?      @db.Decimal(15, 2)
+  totalAmount    Decimal       @db.Decimal(15, 2)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relations
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  receipts Receipt[]
+
+  @@unique([invoiceNumber, tenantId])
+  @@map("invoices")
+}
+
+model BillingSchedule {
+  id                String              @id @default(uuid())
+  tenantId          String
+  contractId        String
+  description       String
+  scheduleType      BillingScheduleType
+  frequency         BillingFrequency
+  amount            Decimal             @db.Decimal(15, 2)
+  currency          String              @db.Char(3)
+  startDate         DateTime
+  endDate           DateTime?
+  nextBillingDate   DateTime
+  isActive          Boolean             @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("billing_schedules")
+}
+
+model Receipt {
+  id            String        @id @default(uuid())
+  tenantId      String
+  invoiceId     String
+  receiptNumber String
+  amount        Decimal       @db.Decimal(15, 2)
+  currency      String        @db.Char(3)
+  paymentMethod PaymentMethod
+  paymentDate   DateTime
+  bankReference String?
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@unique([receiptNumber, tenantId])
+  @@map("receipts")
+}
+
+// Enums for Billing & Invoicing
+enum InvoiceStatus {
+  DRAFT
+  PENDING
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+  REFUNDED
+}
+
+enum BillingScheduleType {
+  FIXED
+  MILESTONE_BASED
+  USAGE_BASED
+  PERCENTAGE_COMPLETION
+}
+
+enum BillingFrequency {
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUALLY
+  ANNUALLY
+  ON_DELIVERY
+  ON_MILESTONE
+  CUSTOM
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CREDIT_CARD
+  CHECK
+  CASH
+  DIGITAL_WALLET
+  CRYPTOCURRENCY
+  OTHER
+}

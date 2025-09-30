@@ -1,0 +1,75 @@
+<div class="dashboard-container">
+  <h1>Dashboard IFRS 15</h1>
+  
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="card-header">
+        <h3>Contratos Ativos</h3>
+        <span class="card-icon">📄</span>
+      </div>
+      <div class="card-content">
+        <div class="stat-number">{{ contractsCount }}</div>
+        <div class="stat-label">Total de contratos</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="card-header">
+        <h3>Receita Reconhecida</h3>
+        <span class="card-icon">💰</span>
+      </div>
+      <div class="card-content">
+        <div class="stat-number">{{ totalRevenue | currency:'BRL':'symbol':'1.0-0' }}</div>
+        <div class="stat-label">Este mês</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="card-header">
+        <h3>Performance Obligations</h3>
+        <span class="card-icon">📋</span>
+      </div>
+      <div class="card-content">
+        <div class="stat-number">{{ performanceObligations }}</div>
+        <div class="stat-label">Em andamento</div>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="card-header">
+        <h3>Clientes</h3>
+        <span class="card-icon">🏢</span>
+      </div>
+      <div class="card-content">
+        <div class="stat-number">{{ clientsCount }}</div>
+        <div class="stat-label">Ativos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-section">
+    <div class="chart-card">
+      <div class="card-header">
+        <h3>Receita por Mês</h3>
+      </div>
+      <div class="card-content">
+        <div class="chart-placeholder">
+          <span class="chart-icon">📈</span>
+          <p>Gráfico de receita será exibido aqui</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="card-header">
+        <h3>Status dos Contratos</h3>
+      </div>
+      <div class="card-content">
+        <div class="chart-placeholder">
+          <span class="chart-icon">🥧</span>
+          <p>Gráfico de status será exibido aqui</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

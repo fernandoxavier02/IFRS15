@@ -1,0 +1,132 @@
+<div class="app-container">
+  <!-- Header/Toolbar -->
+  <header class="app-header">
+    <div class="header-content">
+      <!-- Logo and Brand -->
+      <div class="brand">
+        <mat-icon class="brand-icon">account_balance</mat-icon>
+        <h1 class="brand-title">IFRS 15</h1>
+        <span class="brand-subtitle">Revenue Recognition</span>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="main-nav" [class.nav-open]="isMenuOpen">
+        <a 
+          mat-button 
+          routerLink="/dashboard" 
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </a>
+        
+        <a 
+          mat-button 
+          routerLink="/contracts" 
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          <mat-icon>description</mat-icon>
+          <span>Contratos</span>
+        </a>
+        
+        <a 
+          mat-button 
+          routerLink="/revenue" 
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          <mat-icon>trending_up</mat-icon>
+          <span>Receitas</span>
+        </a>
+        
+        <a 
+          mat-button 
+          routerLink="/clients" 
+          routerLinkActive="active"
+          class="nav-link"
+        >
+          <mat-icon>people</mat-icon>
+          <span>Clientes</span>
+        </a>
+      </nav>
+
+      <!-- User Menu and Mobile Toggle -->
+      <div class="header-actions">
+        <!-- Mobile Menu Toggle -->
+        <button 
+          mat-icon-button 
+          class="mobile-menu-toggle"
+          (click)="toggleMobileMenu()"
+          [attr.aria-label]="isMenuOpen ? 'Fechar menu' : 'Abrir menu'"
+        >
+          <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+        </button>
+
+        <!-- User Menu -->
+        <div class="user-menu">
+          <button 
+            mat-button 
+            [matMenuTriggerFor]="userMenuDropdown"
+            class="user-button"
+          >
+            <mat-icon>account_circle</mat-icon>
+            <span class="user-name">Usuário</span>
+            <mat-icon class="dropdown-icon">expand_more</mat-icon>
+          </button>
+          
+          <mat-menu #userMenuDropdown="matMenu" class="user-dropdown">
+            <button mat-menu-item>
+              <mat-icon>person</mat-icon>
+              <span>Perfil</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>settings</mat-icon>
+              <span>Configurações</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item class="logout-item">
+              <mat-icon>logout</mat-icon>
+              <span>Sair</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <!-- Global Error Handler -->
+    <app-error-handler 
+      [error]="globalError" 
+      [severity]="errorSeverity"
+      [showDetails]="false"
+      [retryable]="true"
+      [reportable]="true"
+      (dismissed)="dismissError()"
+      (retried)="retryLastAction()"
+      (reported)="reportError($event)"
+    ></app-error-handler>
+    
+    <div class="content-wrapper">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-info">
+        <p>&copy; 2024 Sistema IFRS 15. Todos os direitos reservados.</p>
+        <p class="footer-version">Versão 1.0.0</p>
+      </div>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Ajuda</a>
+        <a href="#" class="footer-link">Documentação</a>
+        <a href="#" class="footer-link">Suporte</a>
+      </div>
+    </div>
+  </footer>
+</div>

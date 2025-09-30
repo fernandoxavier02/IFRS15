@@ -1,0 +1,95 @@
+// ============================================================================
+// IFRS 15 - BALANCE SHEET ITEMS (Saldos)
+// ============================================================================
+
+model ContractAsset {
+  id                      String   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String?
+  description             String
+  amount                  Decimal  @db.Decimal(15, 2)
+  currency                String   @db.Char(3)
+  recognitionDate         DateTime
+  expectedConversionDate  DateTime?
+  impairmentAmount        Decimal? @db.Decimal(15, 2)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation? @relation(fields: [performanceObligationId], references: [id], onDelete: SetNull)
+
+  @@map("contract_assets")
+}
+
+model ContractLiability {
+  id                       String   @id @default(uuid())
+  tenantId                 String
+  contractId               String
+  performanceObligationId  String?
+  description              String
+  amount                   Decimal  @db.Decimal(15, 2)
+  currency                 String   @db.Char(3)
+  recognitionDate          DateTime
+  expectedSatisfactionDate DateTime?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+
+  // Relations
+  tenant                Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation? @relation(fields: [performanceObligationId], references: [id], onDelete: SetNull)
+
+  @@map("contract_liabilities")
+}
+
+model RefundLiability {
+  id                String   @id @default(uuid())
+  tenantId          String
+  contractId        String
+  description       String
+  amount            Decimal  @db.Decimal(15, 2)
+  currency          String   @db.Char(3)
+  refundProbability Decimal  @db.Decimal(5, 2)
+  expectedRefundDate DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("refund_liabilities")
+}
+
+model EstimatedProvision {
+  id            String          @id @default(uuid())
+  tenantId      String
+  contractId    String
+  provisionType ProvisionType
+  description   String
+  amount        Decimal         @db.Decimal(15, 2)
+  currency      String          @db.Char(3)
+  probability   Decimal         @db.Decimal(5, 2)
+  expectedDate  DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("estimated_provisions")
+}
+
+// Enums for Balance Sheet
+enum ProvisionType {
+  WARRANTY
+  RETURNS
+  PENALTIES
+  ONEROUS_CONTRACT
+  RESTRUCTURING
+  LEGAL_CLAIMS
+}

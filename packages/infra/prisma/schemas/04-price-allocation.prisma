@@ -1,0 +1,65 @@
+// ============================================================================
+// IFRS 15 - PRICE ALLOCATION (Step 4: Allocate Transaction Price)
+// ============================================================================
+
+model StandalonePrice {
+  id               String                @id @default(uuid())
+  tenantId         String
+  goodOrService    String
+  description      String
+  price            Decimal               @db.Decimal(15, 2)
+  currency         String                @db.Char(3)
+  estimationMethod StandalonePriceMethod
+  observablePrice  Boolean               @default(false)
+  marketEvidence   String?
+  effectiveDate    DateTime
+  expirationDate   DateTime?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  // Relations
+  tenant           Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  priceAllocations PriceAllocation[]
+
+  @@map("standalone_prices")
+}
+
+model PriceAllocation {
+  id                      String           @id @default(uuid())
+  tenantId                String
+  contractId              String
+  standalonePriceId       String
+  performanceObligationId String?
+  description             String
+  allocationMethod        AllocationMethod
+  allocatedAmount         Decimal          @db.Decimal(15, 2)
+  allocationPercentage    Decimal          @db.Decimal(5, 2)
+  discountAllocation      Decimal?         @db.Decimal(15, 2)
+  variableAllocation      Decimal?         @db.Decimal(15, 2)
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  // Relations
+  tenant          Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract        Contract        @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  standalonePrice StandalonePrice @relation(fields: [standalonePriceId], references: [id], onDelete: Cascade)
+
+  @@map("price_allocations")
+}
+
+// Enums for Price Allocation
+enum StandalonePriceMethod {
+  OBSERVABLE_PRICE
+  ADJUSTED_MARKET_ASSESSMENT
+  EXPECTED_COST_PLUS_MARGIN
+  RESIDUAL_APPROACH
+}
+
+enum AllocationMethod {
+  RELATIVE_STANDALONE_PRICE
+  ADJUSTED_MARKET_ASSESSMENT
+  EXPECTED_COST_PLUS_MARGIN
+  RESIDUAL_APPROACH
+  DISCOUNT_ALLOCATION
+  VARIABLE_CONSIDERATION_ALLOCATION
+}

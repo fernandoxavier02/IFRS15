@@ -1,0 +1,81 @@
+// ============================================================================
+// IFRS 15 - REVENUE RECOGNITION (Step 5: Recognize Revenue)
+// ============================================================================
+
+model RevenueSchedule {
+  id                      String                   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String
+  scheduleType            RevenueScheduleType
+  recognitionMethod       RevenueRecognitionMethod
+  amount                  Decimal                  @db.Decimal(15, 2)
+  recognitionDate         DateTime
+  period                  String                   // YYYY-MM format
+  description             String?
+  status                  RevenueRecognitionStatus @default(PENDING)
+  journalEntryId          String?
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract              @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("revenue_schedules")
+}
+
+model ProgressMethod {
+  id                      String             @id @default(uuid())
+  tenantId                String
+  performanceObligationId String
+  methodType              ProgressMethodType
+  description             String
+  inputMethod             String?            // cost-to-cost, labor-hours, etc.
+  outputMethod            String?            // units, value delivered, etc.
+  totalInput              Decimal?           @db.Decimal(15, 2)
+  completedInput          Decimal?           @db.Decimal(15, 2)
+  totalOutput             Decimal?           @db.Decimal(15, 2)
+  completedOutput         Decimal?           @db.Decimal(15, 2)
+  progressPercentage      Decimal            @db.Decimal(5, 2)
+  measurementDate         DateTime
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("progress_methods")
+}
+
+// Enums for Revenue Recognition
+enum RevenueScheduleType {
+  POINT_IN_TIME
+  OVER_TIME
+  MILESTONE_BASED
+  USAGE_BASED
+}
+
+enum RevenueRecognitionMethod {
+  POINT_IN_TIME
+  OVER_TIME_INPUT
+  OVER_TIME_OUTPUT
+  MILESTONE
+  USAGE
+  STRAIGHT_LINE
+}
+
+enum RevenueRecognitionStatus {
+  PENDING
+  RECOGNIZED
+  REVERSED
+  ADJUSTED
+}
+
+enum ProgressMethodType {
+  INPUT_METHOD
+  OUTPUT_METHOD
+  TIME_ELAPSED
+}

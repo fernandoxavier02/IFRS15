@@ -1,0 +1,354 @@
+<div class="contract-wizard">
+  <div class="wizard-header">
+    <h2>Assistente de Contrato IFRS 15</h2>
+    <div class="step-indicator">
+      <div class="step" [class.active]="currentStep === 0" [class.completed]="currentStep > 0">
+        <span class="step-number">1</span>
+        <span class="step-label">Informações do Contrato</span>
+      </div>
+      <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1">
+        <span class="step-number">2</span>
+        <span class="step-label">Obrigações de Performance</span>
+      </div>
+      <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2">
+        <span class="step-number">3</span>
+        <span class="step-label">Alocação de Preço</span>
+      </div>
+      <div class="step" [class.active]="currentStep === 3" [class.completed]="currentStep > 3">
+        <span class="step-number">4</span>
+        <span class="step-label">Simulação de Receita</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="wizard-content">
+    <!-- Step 1: Contract Information -->
+    <div class="step-content" *ngIf="currentStep === 0">
+      <div class="card">
+        <div class="card-header">
+          <h3>Informações do Contrato</h3>
+        </div>
+        <div class="card-content">
+          <form [formGroup]="contractInfoForm" class="form-grid">
+            <div class="form-field">
+              <label for="contractNumber">Número do Contrato *</label>
+              <input 
+                id="contractNumber"
+                type="text" 
+                formControlName="contractNumber"
+                placeholder="Digite o número do contrato"
+                class="form-input">
+              <div class="error-message" *ngIf="contractInfoForm.get('contractNumber')?.invalid && contractInfoForm.get('contractNumber')?.touched">
+                {{ getErrorMessage('contractNumber', contractInfoForm) }}
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="clientName">Nome do Cliente *</label>
+              <input 
+                id="clientName"
+                type="text" 
+                formControlName="clientName"
+                placeholder="Digite o nome do cliente"
+                class="form-input">
+              <div class="error-message" *ngIf="contractInfoForm.get('clientName')?.invalid && contractInfoForm.get('clientName')?.touched">
+                {{ getErrorMessage('clientName', contractInfoForm) }}
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="contractValue">Valor Total do Contrato *</label>
+              <input 
+                id="contractValue"
+                type="number" 
+                formControlName="contractValue"
+                placeholder="0,00"
+                class="form-input">
+              <div class="error-message" *ngIf="contractInfoForm.get('contractValue')?.invalid && contractInfoForm.get('contractValue')?.touched">
+                {{ getErrorMessage('contractValue', contractInfoForm) }}
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="startDate">Data de Início *</label>
+              <input 
+                id="startDate"
+                type="date" 
+                formControlName="startDate"
+                class="form-input">
+              <div class="error-message" *ngIf="contractInfoForm.get('startDate')?.invalid && contractInfoForm.get('startDate')?.touched">
+                {{ getErrorMessage('startDate', contractInfoForm) }}
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="endDate">Data de Término</label>
+              <input 
+                id="endDate"
+                type="date" 
+                formControlName="endDate"
+                class="form-input">
+            </div>
+
+            <div class="form-field full-width">
+              <label for="description">Descrição do Contrato</label>
+              <textarea 
+                id="description"
+                formControlName="description"
+                placeholder="Descreva o contrato..."
+                class="form-textarea"
+                rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Performance Obligations -->
+    <div class="step-content" *ngIf="currentStep === 1">
+      <div class="card">
+        <div class="card-header">
+          <h3>Obrigações de Performance</h3>
+          <button type="button" class="btn btn-primary" (click)="addPerformanceObligation()">
+            <span class="icon">➕</span>
+            Adicionar Obrigação
+          </button>
+        </div>
+        <div class="card-content">
+          <div class="performance-obligations" formArrayName="performanceObligations">
+            <div 
+              *ngFor="let obligation of performanceObligations.controls; let i = index" 
+              [formGroupName]="i"
+              class="obligation-item">
+              <div class="obligation-header">
+                <h4>Obrigação {{ i + 1 }}</h4>
+                <button 
+                  type="button" 
+                  class="btn btn-danger btn-small"
+                  (click)="removePerformanceObligation(i)"
+                  *ngIf="performanceObligations.length > 1">
+                  <span class="icon">🗑️</span>
+                </button>
+              </div>
+              
+              <div class="form-grid">
+                <div class="form-field">
+                  <label>Descrição *</label>
+                  <input 
+                    type="text" 
+                    formControlName="description"
+                    placeholder="Descrição da obrigação"
+                    class="form-input">
+                </div>
+
+                <div class="form-field">
+                  <label>Preço de Venda Independente (SSP) *</label>
+                  <input 
+                    type="number" 
+                    formControlName="ssp"
+                    placeholder="0,00"
+                    class="form-input">
+                </div>
+
+                <div class="form-field">
+                  <label>Método de Reconhecimento *</label>
+                  <select formControlName="recognitionMethod" class="form-select">
+                    <option value="">Selecione o método</option>
+                    <option *ngFor="let method of reconhecimentoMethods" [value]="method.value">
+                      {{ method.label }}
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-field full-width">
+                  <label>Observações</label>
+                  <textarea 
+                    formControlName="notes"
+                    placeholder="Observações sobre esta obrigação..."
+                    class="form-textarea"
+                    rows="2"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-info" *ngIf="performanceObligations.length > 0">
+            <div class="summary-item">
+              <span class="label">Total SSP:</span>
+              <span class="value">{{ getTotalSSP() | currency:'BRL':'symbol':'1.2-2' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Price Allocation -->
+    <div class="step-content" *ngIf="currentStep === 2">
+      <div class="card">
+        <div class="card-header">
+          <h3>Alocação de Preço</h3>
+        </div>
+        <div class="card-content">
+          <form [formGroup]="priceAllocationForm">
+            <div class="form-field">
+              <label for="allocationMethod">Método de Alocação *</label>
+              <select id="allocationMethod" formControlName="allocationMethod" class="form-select">
+                <option value="">Selecione o método</option>
+                <option *ngFor="let method of allocationMethods" [value]="method.value">
+                  {{ method.label }}
+                </option>
+              </select>
+            </div>
+
+            <button 
+              type="button" 
+              class="btn btn-secondary"
+              (click)="calculateAllocation()"
+              [disabled]="!priceAllocationForm.get('allocationMethod')?.value">
+              Calcular Alocação
+            </button>
+
+            <div class="allocation-results" *ngIf="wizardData.priceAllocation?.allocations">
+              <h4>Resultado da Alocação</h4>
+              <div class="allocation-table">
+                <div class="table-header">
+                  <div class="col">Obrigação</div>
+                  <div class="col">SSP</div>
+                  <div class="col">% Alocação</div>
+                  <div class="col">Valor Alocado</div>
+                </div>
+                <div 
+                  class="table-row" 
+                  *ngFor="let allocation of wizardData.priceAllocation.allocations">
+                  <div class="col">{{ allocation.description }}</div>
+                  <div class="col">{{ allocation.ssp | currency:'BRL':'symbol':'1.2-2' }}</div>
+                  <div class="col">{{ allocation.percentage | percent:'1.2-2' }}</div>
+                  <div class="col">{{ allocation.allocatedValue | currency:'BRL':'symbol':'1.2-2' }}</div>
+                </div>
+                <div class="table-footer">
+                  <div class="col"><strong>Total</strong></div>
+                  <div class="col"><strong>{{ getTotalSSP() | currency:'BRL':'symbol':'1.2-2' }}</strong></div>
+                  <div class="col"><strong>100%</strong></div>
+                  <div class="col"><strong>{{ getTotalAllocatedValue() | currency:'BRL':'symbol':'1.2-2' }}</strong></div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Revenue Simulation -->
+    <div class="step-content" *ngIf="currentStep === 3">
+      <div class="card">
+        <div class="card-header">
+          <h3>Simulação de Receita</h3>
+        </div>
+        <div class="card-content">
+          <form [formGroup]="simulationForm">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="simulationPeriods">Períodos de Simulação *</label>
+                <input 
+                  id="simulationPeriods"
+                  type="number" 
+                  formControlName="periods"
+                  placeholder="12"
+                  min="1"
+                  max="60"
+                  class="form-input">
+              </div>
+
+              <div class="form-field">
+                <label for="periodType">Tipo de Período *</label>
+                <select id="periodType" formControlName="periodType" class="form-select">
+                  <option value="monthly">Mensal</option>
+                  <option value="quarterly">Trimestral</option>
+                  <option value="yearly">Anual</option>
+                </select>
+              </div>
+            </div>
+
+            <button 
+              type="button" 
+              class="btn btn-secondary"
+              (click)="generateSimulation()"
+              [disabled]="!simulationForm.valid">
+              Gerar Simulação
+            </button>
+
+            <div class="simulation-results" *ngIf="wizardData.revenueSimulation?.schedule">
+              <h4>Cronograma de Receita</h4>
+              <div class="simulation-table">
+                <div class="table-header">
+                  <div class="col">Período</div>
+                  <div class="col">Data</div>
+                  <div class="col">Receita Reconhecida</div>
+                  <div class="col">Receita Acumulada</div>
+                </div>
+                <div 
+                  class="table-row" 
+                  *ngFor="let period of wizardData.revenueSimulation.schedule">
+                  <div class="col">{{ period.period }}</div>
+                  <div class="col">{{ period.date | date:'dd/MM/yyyy' }}</div>
+                  <div class="col">{{ period.revenue | currency:'BRL':'symbol':'1.2-2' }}</div>
+                  <div class="col">{{ period.cumulativeRevenue | currency:'BRL':'symbol':'1.2-2' }}</div>
+                </div>
+              </div>
+
+              <div class="simulation-summary" *ngIf="wizardData.revenueSimulation?.summary">
+                <h4>Resumo da Simulação</h4>
+                <div class="summary-grid">
+                  <div class="summary-item">
+                    <span class="label">Receita Total:</span>
+                    <span class="value">{{ wizardData.revenueSimulation.summary.totalRevenue | currency:'BRL':'symbol':'1.2-2' }}</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="label">Duração:</span>
+                    <span class="value">{{ wizardData.revenueSimulation.summary.duration }} períodos</span>
+                  </div>
+                  <div class="summary-item">
+                    <span class="label">Receita Média por Período:</span>
+                    <span class="value">{{ wizardData.revenueSimulation.summary.averageRevenue | currency:'BRL':'symbol':'1.2-2' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wizard-actions">
+    <button 
+      type="button" 
+      class="btn btn-secondary"
+      (click)="previousStep()"
+      [disabled]="currentStep === 0">
+      <span class="icon">⬅️</span>
+      Anterior
+    </button>
+
+    <button 
+      type="button" 
+      class="btn btn-primary"
+      (click)="nextStep()"
+      [disabled]="!isCurrentStepValid()"
+      *ngIf="currentStep < 3">
+      Próximo
+      <span class="icon">➡️</span>
+    </button>
+
+    <button 
+      type="button" 
+      class="btn btn-success"
+      (click)="finalizeContract()"
+      [disabled]="!isCurrentStepValid() || loading"
+      *ngIf="currentStep === 3">
+      <span class="icon" *ngIf="!loading">✅</span>
+      <span class="icon" *ngIf="loading">⏳</span>
+      {{ loading ? 'Finalizando...' : 'Finalizar Contrato' }}
+    </button>
+  </div>
+</div>

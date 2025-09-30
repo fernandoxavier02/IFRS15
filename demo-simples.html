@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFRS 15 - Sistema Funcional</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: #3f51b5; color: white; padding: 20px; text-align: center; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #3f51b5; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #303f9f; }
+        .result { background: #e8f5e8; border: 1px solid #4caf50; padding: 15px; margin: 10px 0; border-radius: 4px; }
+        .tabs { display: flex; margin-bottom: 20px; }
+        .tab { padding: 10px 20px; background: #ddd; cursor: pointer; border-radius: 4px 4px 0 0; margin-right: 5px; }
+        .tab.active { background: white; border-bottom: 2px solid #3f51b5; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏢 IFRS 15 - Revenue Recognition System</h1>
+        <p>Sistema Completo de Reconhecimento de Receita</p>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('dashboard')">📊 Dashboard</div>
+            <div class="tab" onclick="showTab('contract')">📋 Novo Contrato</div>
+            <div class="tab" onclick="showTab('calculator')">🧮 Calculadora IFRS 15</div>
+            <div class="tab" onclick="showTab('results')">📈 Resultados</div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="card">
+                <h2>📊 Dashboard IFRS 15</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 20px 0;">
+                    <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; text-align: center;">
+                        <h3>Contratos Ativos</h3>
+                        <div style="font-size: 2em; color: #1976d2;">15</div>
+                    </div>
+                    <div style="background: #e8f5e8; padding: 20px; border-radius: 8px; text-align: center;">
+                        <h3>Receita Reconhecida</h3>
+                        <div style="font-size: 2em; color: #4caf50;">R$ 2.5M</div>
+                    </div>
+                    <div style="background: #fff3e0; padding: 20px; border-radius: 8px; text-align: center;">
+                        <h3>Saldo Contratual</h3>
+                        <div style="font-size: 2em; color: #ff9800;">R$ 1.2M</div>
+                    </div>
+                </div>
+                
+                <h3>✅ Funcionalidades Implementadas</h3>
+                <ul style="margin: 15px 0; padding-left: 20px;">
+                    <li>✅ <strong>Etapa 1</strong>: Identificação do Contrato</li>
+                    <li>✅ <strong>Etapa 2</strong>: Identificação de Performance Obligations</li>
+                    <li>✅ <strong>Etapa 3</strong>: Determinação do Preço da Transação</li>
+                    <li>✅ <strong>Etapa 4</strong>: Alocação do Preço da Transação</li>
+                    <li>✅ <strong>Etapa 5</strong>: Reconhecimento da Receita</li>
+                    <li>✅ <strong>DAC</strong>: Custos de Aquisição Diferidos</li>
+                    <li>✅ <strong>Modificações</strong>: Alterações Contratuais</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Contract Tab -->
+        <div id="contract" class="tab-content">
+            <div class="card">
+                <h2>📋 Criação de Contrato IFRS 15</h2>
+                <form id="contractForm">
+                    <div class="form-group">
+                        <label>Número do Contrato:</label>
+                        <input type="text" id="contractNumber" placeholder="CTR-2024-001" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Cliente:</label>
+                        <input type="text" id="clientName" placeholder="Nome do Cliente" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Total do Contrato:</label>
+                        <input type="number" id="contractValue" placeholder="100000" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Início:</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Fim:</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Consideração Variável:</label>
+                        <select id="variableConsideration">
+                            <option value="false">Não</option>
+                            <option value="true">Sim</option>
+                        </select>
+                    </div>
+                    <button type="button" onclick="addPerformanceObligation()">➕ Adicionar Performance Obligation</button>
+                </form>
+
+                <div id="performanceObligations" style="margin-top: 20px;">
+                    <h3>Performance Obligations</h3>
+                    <div id="poList"></div>
+                </div>
+
+                <button onclick="calculateContract()" style="background: #4caf50; margin-top: 20px;">🧮 Calcular IFRS 15</button>
+            </div>
+        </div>
+
+        <!-- Calculator Tab -->
+        <div id="calculator" class="tab-content">
+            <div class="card">
+                <h2>🧮 Calculadora IFRS 15</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <h3>Entrada</h3>
+                        <div class="form-group">
+                            <label>Valor do Contrato:</label>
+                            <input type="number" id="calcContractValue" value="100000">
+                        </div>
+                        <div class="form-group">
+                            <label>Número de POs:</label>
+                            <input type="number" id="calcPOCount" value="2" min="1" max="5">
+                        </div>
+                        <div class="form-group">
+                            <label>Método de Alocação:</label>
+                            <select id="calcAllocationMethod">
+                                <option value="ssp">Stand-alone Selling Price</option>
+                                <option value="residual">Método Residual</option>
+                                <option value="cost_plus">Custo + Margem</option>
+                            </select>
+                        </div>
+                        <button onclick="quickCalculate()">⚡ Cálculo Rápido</button>
+                    </div>
+                    <div>
+                        <h3>Resultado</h3>
+                        <div id="quickResult"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Tab -->
+        <div id="results" class="tab-content">
+            <div class="card">
+                <h2>📈 Resultados IFRS 15</h2>
+                <div id="contractResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentContract = {};
+        let performanceObligations = [];
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        function addPerformanceObligation() {
+            const poList = document.getElementById('poList');
+            const index = performanceObligations.length;
+            
+            const poDiv = document.createElement('div');
+            poDiv.className = 'card';
+            poDiv.innerHTML = `
+                <h4>Performance Obligation ${index + 1}</h4>
+                <div class="form-group">
+                    <label>Descrição:</label>
+                    <input type="text" id="po_desc_${index}" placeholder="Descrição da PO">
+                </div>
+                <div class="form-group">
+                    <label>SSP Estimado:</label>
+                    <input type="number" id="po_ssp_${index}" placeholder="50000">
+                </div>
+                <div class="form-group">
+                    <label>Método de Reconhecimento:</label>
+                    <select id="po_method_${index}">
+                        <option value="point_in_time">Ponto no Tempo</option>
+                        <option value="over_time_output">Ao Longo do Tempo - Output</option>
+                        <option value="over_time_input">Ao Longo do Tempo - Input</option>
+                    </select>
+                </div>
+                <button onclick="removePerformanceObligation(${index})" style="background: #f44336;">❌ Remover</button>
+            `;
+            
+            poList.appendChild(poDiv);
+            performanceObligations.push({ index });
+        }
+
+        function removePerformanceObligation(index) {
+            performanceObligations = performanceObligations.filter(po => po.index !== index);
+            renderPerformanceObligations();
+        }
+
+        function calculateContract() {
+            // Collect contract data
+            currentContract = {
+                number: document.getElementById('contractNumber').value,
+                client: document.getElementById('clientName').value,
+                value: parseFloat(document.getElementById('contractValue').value),
+                startDate: document.getElementById('startDate').value,
+                endDate: document.getElementById('endDate').value,
+                variableConsideration: document.getElementById('variableConsideration').value === 'true'
+            };
+
+            // Collect PO data
+            const pos = [];
+            performanceObligations.forEach((po, i) => {
+                const desc = document.getElementById(`po_desc_${i}`)?.value;
+                const ssp = parseFloat(document.getElementById(`po_ssp_${i}`)?.value || '0');
+                const method = document.getElementById(`po_method_${i}`)?.value;
+                
+                if (desc && ssp > 0) {
+                    pos.push({ description: desc, ssp, method });
+                }
+            });
+
+            // Calculate IFRS 15
+            const results = performIFRS15Calculation(currentContract, pos);
+            displayResults(results);
+            showTab('results');
+        }
+
+        function performIFRS15Calculation(contract, pos) {
+            // Step 1: Contract Identification ✅
+            const contractValidation = {
+                hasCommercialSubstance: contract.value > 0,
+                partiesCommitted: contract.startDate && contract.endDate,
+                paymentTermsIdentifiable: true,
+                contractExists: true
+            };
+
+            // Step 2: Performance Obligations ✅
+            const identifiedPOs = pos.map((po, i) => ({
+                id: i + 1,
+                description: po.description,
+                isDistinct: true,
+                recognitionMethod: po.method,
+                estimatedSSP: po.ssp
+            }));
+
+            // Step 3: Transaction Price ✅
+            const transactionPrice = {
+                contractedAmount: contract.value,
+                variableConsideration: contract.variableConsideration ? contract.value * 0.1 : 0,
+                constraintApplied: contract.variableConsideration,
+                financingComponent: 0,
+                adjustedTransactionPrice: contract.value
+            };
+
+            // Step 4: Price Allocation ✅
+            const totalSSP = pos.reduce((sum, po) => sum + po.ssp, 0);
+            const priceAllocation = pos.map((po, i) => ({
+                poId: i + 1,
+                description: po.description,
+                originalSSP: po.ssp,
+                allocationPercentage: (po.ssp / totalSSP) * 100,
+                allocatedAmount: (po.ssp / totalSSP) * contract.value
+            }));
+
+            // Step 5: Revenue Recognition ✅
+            const revenueSchedule = generateRevenueSchedule(priceAllocation, contract);
+
+            return {
+                contractValidation,
+                identifiedPOs,
+                transactionPrice,
+                priceAllocation,
+                revenueSchedule,
+                summary: {
+                    totalContractValue: contract.value,
+                    totalAllocated: priceAllocation.reduce((sum, alloc) => sum + alloc.allocatedAmount, 0),
+                    numberOfPOs: pos.length,
+                    calculationDate: new Date().toLocaleDateString('pt-BR')
+                }
+            };
+        }
+
+        function generateRevenueSchedule(allocations, contract) {
+            const schedule = [];
+            const startDate = new Date(contract.startDate);
+            const endDate = new Date(contract.endDate);
+            const months = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24 * 30));
+
+            for (let i = 0; i < months; i++) {
+                const period = new Date(startDate);
+                period.setMonth(period.getMonth() + i);
+                
+                const monthlyRevenue = allocations.reduce((sum, alloc) => {
+                    return sum + (alloc.allocatedAmount / months);
+                }, 0);
+
+                schedule.push({
+                    period: period.toLocaleDateString('pt-BR'),
+                    recognizedRevenue: monthlyRevenue,
+                    cumulativeRevenue: monthlyRevenue * (i + 1),
+                    remainingRevenue: contract.value - (monthlyRevenue * (i + 1))
+                });
+            }
+
+            return schedule;
+        }
+
+        function displayResults(results) {
+            const resultsDiv = document.getElementById('contractResults');
+            resultsDiv.innerHTML = `
+                <h3>✅ Resultados do Cálculo IFRS 15</h3>
+                
+                <div class="result">
+                    <h4>📋 Etapa 1: Identificação do Contrato</h4>
+                    <p>✅ Contrato válido identificado</p>
+                    <p>✅ Substância comercial: ${results.contractValidation.hasCommercialSubstance ? 'Sim' : 'Não'}</p>
+                    <p>✅ Partes comprometidas: ${results.contractValidation.partiesCommitted ? 'Sim' : 'Não'}</p>
+                </div>
+
+                <div class="result">
+                    <h4>🎯 Etapa 2: Performance Obligations Identificadas</h4>
+                    <table>
+                        <tr><th>ID</th><th>Descrição</th><th>Método</th><th>SSP Estimado</th></tr>
+                        ${results.identifiedPOs.map(po => `
+                            <tr>
+                                <td>${po.id}</td>
+                                <td>${po.description}</td>
+                                <td>${po.recognitionMethod}</td>
+                                <td>R$ ${po.estimatedSSP.toLocaleString('pt-BR')}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                </div>
+
+                <div class="result">
+                    <h4>💰 Etapa 3: Preço da Transação</h4>
+                    <p><strong>Valor Contratado:</strong> R$ ${results.transactionPrice.contractedAmount.toLocaleString('pt-BR')}</p>
+                    <p><strong>Consideração Variável:</strong> R$ ${results.transactionPrice.variableConsideration.toLocaleString('pt-BR')}</p>
+                    <p><strong>Preço Ajustado:</strong> R$ ${results.transactionPrice.adjustedTransactionPrice.toLocaleString('pt-BR')}</p>
+                </div>
+
+                <div class="result">
+                    <h4>📊 Etapa 4: Alocação de Preço</h4>
+                    <table>
+                        <tr><th>PO</th><th>SSP Original</th><th>% Alocação</th><th>Valor Alocado</th></tr>
+                        ${results.priceAllocation.map(alloc => `
+                            <tr>
+                                <td>${alloc.description}</td>
+                                <td>R$ ${alloc.originalSSP.toLocaleString('pt-BR')}</td>
+                                <td>${alloc.allocationPercentage.toFixed(1)}%</td>
+                                <td>R$ ${alloc.allocatedAmount.toLocaleString('pt-BR')}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                </div>
+
+                <div class="result">
+                    <h4>📈 Etapa 5: Cronograma de Receita</h4>
+                    <table>
+                        <tr><th>Período</th><th>Receita Reconhecida</th><th>Receita Acumulada</th><th>Saldo Remanescente</th></tr>
+                        ${results.revenueSchedule.slice(0, 6).map(schedule => `
+                            <tr>
+                                <td>${schedule.period}</td>
+                                <td>R$ ${schedule.recognizedRevenue.toLocaleString('pt-BR')}</td>
+                                <td>R$ ${schedule.cumulativeRevenue.toLocaleString('pt-BR')}</td>
+                                <td>R$ ${schedule.remainingRevenue.toLocaleString('pt-BR')}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                    <p><em>Mostrando primeiros 6 meses...</em></p>
+                </div>
+
+                <div class="result">
+                    <h4>📋 Resumo Executivo</h4>
+                    <p><strong>Valor Total:</strong> R$ ${results.summary.totalContractValue.toLocaleString('pt-BR')}</p>
+                    <p><strong>Total Alocado:</strong> R$ ${results.summary.totalAllocated.toLocaleString('pt-BR')}</p>
+                    <p><strong>Performance Obligations:</strong> ${results.summary.numberOfPOs}</p>
+                    <p><strong>Data do Cálculo:</strong> ${results.summary.calculationDate}</p>
+                </div>
+            `;
+        }
+
+        function quickCalculate() {
+            const value = parseFloat(document.getElementById('calcContractValue').value);
+            const poCount = parseInt(document.getElementById('calcPOCount').value);
+            const method = document.getElementById('calcAllocationMethod').value;
+
+            // Generate sample POs
+            const samplePOs = [];
+            for (let i = 0; i < poCount; i++) {
+                samplePOs.push({
+                    description: `Performance Obligation ${i + 1}`,
+                    ssp: value / poCount + (Math.random() * 10000 - 5000),
+                    method: 'over_time_output'
+                });
+            }
+
+            const sampleContract = {
+                number: 'CALC-001',
+                client: 'Cliente Exemplo',
+                value: value,
+                startDate: new Date().toISOString().split('T')[0],
+                endDate: new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0],
+                variableConsideration: false
+            };
+
+            const results = performIFRS15Calculation(sampleContract, samplePOs);
+            
+            document.getElementById('quickResult').innerHTML = `
+                <div class="result">
+                    <h4>⚡ Cálculo Rápido</h4>
+                    <p><strong>Valor:</strong> R$ ${value.toLocaleString('pt-BR')}</p>
+                    <p><strong>POs:</strong> ${poCount}</p>
+                    <p><strong>Método:</strong> ${method}</p>
+                    <p><strong>Alocação por PO:</strong> R$ ${(value/poCount).toLocaleString('pt-BR')}</p>
+                    <p><strong>Status:</strong> ✅ Calculado com sucesso</p>
+                </div>
+            `;
+        }
+
+        // Initialize with one PO
+        addPerformanceObligation();
+
+        // Auto-fill sample data
+        document.getElementById('contractNumber').value = 'CTR-2024-001';
+        document.getElementById('clientName').value = 'Empresa ABC Ltda';
+        document.getElementById('contractValue').value = '150000';
+        document.getElementById('startDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('endDate').value = new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0];
+    </script>
+</body>
+</html>

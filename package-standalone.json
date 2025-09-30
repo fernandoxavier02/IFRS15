@@ -1,0 +1,13 @@
+{
+  "name": "@ifrs15/standalone",
+  "version": "1.0.0",
+  "scripts": {
+    "standalone:setup": "copy .env.standalone .env && copy schema-sqlite.prisma packages\\infra\\prisma\\schema.prisma",
+    "standalone:db": "cd packages\\infra && npx prisma generate && npx prisma db push",
+    "standalone:seed": "cd packages\\infra && npx prisma db seed",
+    "standalone:dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "cd apps\\api && npm run start:dev",
+    "dev:web": "cd apps\\web && npm run start",
+    "standalone:start": "npm run standalone:setup && npm run standalone:db && npm run standalone:seed && npm run standalone:dev"
+  }
+}

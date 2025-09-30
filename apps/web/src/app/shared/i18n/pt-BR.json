@@ -1,0 +1,342 @@
+{
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "view": "Visualizar",
+    "create": "Criar",
+    "update": "Atualizar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "clear": "Limpar",
+    "export": "Exportar",
+    "import": "Importar",
+    "loading": "Carregando...",
+    "yes": "Sim",
+    "no": "Não",
+    "confirm": "Confirmar",
+    "close": "Fechar",
+    "next": "Próximo",
+    "previous": "Anterior",
+    "finish": "Finalizar",
+    "required": "Obrigatório",
+    "optional": "Opcional",
+    "actions": "Ações",
+    "status": "Status",
+    "date": "Data",
+    "value": "Valor",
+    "total": "Total",
+    "description": "Descrição",
+    "name": "Nome",
+    "email": "Email",
+    "phone": "Telefone",
+    "address": "Endereço"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "contracts": "Contratos",
+    "clients": "Clientes",
+    "revenue": "Receitas",
+    "reports": "Relatórios",
+    "settings": "Configurações",
+    "logout": "Sair"
+  },
+  "ifrs15": {
+    "title": "IFRS 15 - Reconhecimento de Receita",
+    "subtitle": "Sistema de Gestão de Receitas conforme IFRS 15",
+    "steps": {
+      "step1": {
+        "title": "Identificar o contrato com o cliente",
+        "description": "Determinar se existe um contrato válido e executável"
+      },
+      "step2": {
+        "title": "Identificar as obrigações de performance",
+        "description": "Identificar bens ou serviços distintos prometidos ao cliente"
+      },
+      "step3": {
+        "title": "Determinar o preço da transação",
+        "description": "Calcular o valor da contraprestação esperada"
+      },
+      "step4": {
+        "title": "Alocar o preço às obrigações",
+        "description": "Distribuir o preço entre as obrigações de performance"
+      },
+      "step5": {
+        "title": "Reconhecer a receita",
+        "description": "Reconhecer quando as obrigações são satisfeitas"
+      }
+    }
+  },
+  "contracts": {
+    "title": "Contratos",
+    "subtitle": "Gestão de contratos e obrigações de performance",
+    "new": "Novo Contrato",
+    "edit": "Editar Contrato",
+    "view": "Visualizar Contrato",
+    "list": "Lista de Contratos",
+    "wizard": "Assistente de Criação",
+    "fields": {
+      "number": "Número do Contrato",
+      "client": "Cliente",
+      "description": "Descrição",
+      "value": "Valor Total",
+      "currency": "Moeda",
+      "startDate": "Data de Início",
+      "endDate": "Data de Fim",
+      "status": "Status",
+      "variableConsideration": "Consideração Variável",
+      "variableAmount": "Valor Variável",
+      "constraintMethod": "Método de Restrição",
+      "financingComponent": "Componente de Financiamento",
+      "discountRate": "Taxa de Desconto",
+      "observations": "Observações"
+    },
+    "status": {
+      "draft": "Rascunho",
+      "active": "Ativo",
+      "completed": "Concluído",
+      "cancelled": "Cancelado",
+      "suspended": "Suspenso"
+    },
+    "messages": {
+      "created": "Contrato criado com sucesso!",
+      "updated": "Contrato atualizado com sucesso!",
+      "deleted": "Contrato excluído com sucesso!",
+      "error": "Erro ao processar contrato",
+      "notFound": "Contrato não encontrado",
+      "confirmDelete": "Tem certeza que deseja excluir este contrato?"
+    }
+  },
+  "performanceObligations": {
+    "title": "Obrigações de Performance",
+    "subtitle": "Identificação e gestão de POs",
+    "add": "Adicionar PO",
+    "remove": "Remover PO",
+    "fields": {
+      "description": "Descrição da Obrigação",
+      "type": "Tipo",
+      "recognitionMethod": "Método de Reconhecimento",
+      "sspEstimated": "SSP Estimado",
+      "estimatedCosts": "Custos Estimados",
+      "estimatedMargin": "Margem Estimada",
+      "startDate": "Data de Início",
+      "endDate": "Data de Fim",
+      "progressMetric": "Métrica de Progresso",
+      "allocatedValue": "Valor Alocado"
+    },
+    "types": {
+      "product": "Produto",
+      "service": "Serviço",
+      "license": "Licença",
+      "right": "Direito de Uso"
+    },
+    "recognitionMethods": {
+      "pointInTime": "Ponto no Tempo",
+      "overTimeOutput": "Ao Longo do Tempo - Output",
+      "overTimeInput": "Ao Longo do Tempo - Input",
+      "overTimeElapsed": "Ao Longo do Tempo - Tempo Decorrido"
+    },
+    "progressMetrics": {
+      "outputUnits": "Unidades Entregues",
+      "outputValue": "Valor Entregue",
+      "inputCosts": "Custos Incorridos",
+      "inputHours": "Horas Trabalhadas",
+      "timeElapsed": "Tempo Decorrido"
+    }
+  },
+  "priceAllocation": {
+    "title": "Alocação de Preço",
+    "subtitle": "Distribuição do preço de transação",
+    "calculate": "Calcular Alocação",
+    "methods": {
+      "ssp": "Stand-alone Selling Price (SSP)",
+      "residual": "Método Residual",
+      "costPlusMargin": "Custo + Margem"
+    },
+    "fields": {
+      "method": "Método de Alocação",
+      "adjustDiscount": "Ajustar Desconto",
+      "considerCosts": "Considerar Custos",
+      "defaultMargin": "Margem Padrão",
+      "observations": "Observações da Alocação"
+    },
+    "results": {
+      "originalSSP": "SSP Original",
+      "allocationPercentage": "% Alocação",
+      "allocatedValue": "Valor Alocado",
+      "discountAdjustment": "Ajuste Desconto",
+      "totalAllocated": "Total Alocado"
+    }
+  },
+  "revenueSimulation": {
+    "title": "Simulação de Receita",
+    "subtitle": "Cronograma de reconhecimento",
+    "generate": "Gerar Simulação",
+    "fields": {
+      "simulationPeriod": "Período de Simulação (meses)",
+      "recognitionFrequency": "Frequência de Reconhecimento",
+      "includeProjections": "Incluir Projeções",
+      "conservativeScenario": "Cenário Conservador"
+    },
+    "frequency": {
+      "monthly": "Mensal",
+      "quarterly": "Trimestral",
+      "annually": "Anual"
+    },
+    "metrics": {
+      "totalContractValue": "Valor Total do Contrato",
+      "revenueToRecognize": "Receita a Reconhecer",
+      "averageMonthlyRevenue": "Receita Mensal Média",
+      "estimatedCompletion": "Conclusão Estimada"
+    },
+    "insights": {
+      "riskFactors": "Fatores de Risco",
+      "recommendations": "Recomendações"
+    }
+  },
+  "clients": {
+    "title": "Clientes",
+    "subtitle": "Gestão de clientes e relacionamentos",
+    "new": "Novo Cliente",
+    "edit": "Editar Cliente",
+    "view": "Visualizar Cliente",
+    "list": "Lista de Clientes",
+    "fields": {
+      "name": "Nome",
+      "document": "Documento",
+      "email": "Email",
+      "phone": "Telefone",
+      "address": "Endereço",
+      "status": "Status",
+      "totalContracts": "Total de Contratos",
+      "totalValue": "Valor Total"
+    },
+    "status": {
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "suspended": "Suspenso"
+    },
+    "messages": {
+      "created": "Cliente criado com sucesso!",
+      "updated": "Cliente atualizado com sucesso!",
+      "deleted": "Cliente excluído com sucesso!",
+      "statusChanged": "Status alterado com sucesso!",
+      "error": "Erro ao processar cliente",
+      "confirmDelete": "Tem certeza que deseja excluir este cliente?"
+    }
+  },
+  "revenue": {
+    "title": "Reconhecimento de Receita",
+    "subtitle": "Gestão e análise de receitas",
+    "calculate": "Calcular Receitas",
+    "schedule": "Cronograma",
+    "analytics": "Análises",
+    "fields": {
+      "recognizedRevenue": "Receita Reconhecida",
+      "cumulativeRevenue": "Receita Acumulada",
+      "pendingRevenue": "Receita Pendente",
+      "contractBalance": "Saldo do Contrato",
+      "progress": "Progresso",
+      "period": "Período"
+    },
+    "charts": {
+      "revenueRecognized": "Receita Reconhecida",
+      "cumulativeRevenue": "Receita Acumulada",
+      "contractBalances": "Saldos Contratuais",
+      "progressTracking": "Acompanhamento de Progresso"
+    }
+  },
+  "validation": {
+    "required": "Este campo é obrigatório",
+    "minLength": "Mínimo de {{length}} caracteres",
+    "maxLength": "Máximo de {{length}} caracteres",
+    "min": "Valor deve ser maior que {{min}}",
+    "max": "Valor deve ser menor que {{max}}",
+    "email": "Email inválido",
+    "pattern": "Formato inválido",
+    "contractNumber": "Formato inválido. Use: CTR-2024-001",
+    "document": "Documento inválido",
+    "currency": "Valor deve ser numérico e positivo",
+    "percentage": "Percentual deve estar entre 0 e 100",
+    "dateRange": "Data de fim deve ser posterior à data de início",
+    "ifrs15": {
+      "commercialSubstance": "Contrato deve ter substância comercial",
+      "commitment": "Datas são obrigatórias para demonstrar compromisso",
+      "paymentTerms": "Termos de pagamento devem ser identificáveis",
+      "distinctness": "Obrigação deve ser distinta e específica",
+      "sspRequired": "SSP deve ser estimado para alocação",
+      "progressMeasurement": "Métrica de progresso é obrigatória"
+    }
+  },
+  "tooltips": {
+    "contractNumber": "Identificador único do contrato conforme IFRS 15.10",
+    "variableConsideration": "Valor que pode variar devido a descontos, bônus, penalidades (IFRS 15.50-59)",
+    "constraintMethod": "Método para estimar consideração variável (IFRS 15.53)",
+    "financingComponent": "Ajuste necessário quando há diferença significativa entre pagamento e transferência (IFRS 15.60-65)",
+    "recognitionMethod": "Reconhecimento no ponto no tempo (IFRS 15.38) ou ao longo do tempo (IFRS 15.35)",
+    "allocationMethod": "Alocação baseada em SSP observável, estimado ou método residual (IFRS 15.76-80)",
+    "sspEstimated": "Preço pelo qual a entidade venderia separadamente o bem/serviço (IFRS 15.77)",
+    "progressMetric": "Métrica para medir progresso na satisfação da obrigação (IFRS 15.41-43)"
+  },
+  "errors": {
+    "general": "Ocorreu um erro inesperado",
+    "network": "Erro de conexão com o servidor",
+    "unauthorized": "Não autorizado - faça login novamente",
+    "forbidden": "Acesso negado - permissão insuficiente",
+    "notFound": "Recurso não encontrado",
+    "validation": "Dados inválidos",
+    "server": "Erro interno do servidor",
+    "timeout": "Tempo limite excedido",
+    "retry": "Tentar Novamente",
+    "report": "Reportar Erro",
+    "goBack": "Voltar"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Visão geral do sistema IFRS 15",
+    "metrics": {
+      "activeContracts": "Contratos Ativos",
+      "recognizedRevenue": "Receitas Reconhecidas",
+      "pendingReports": "Relatórios Pendentes",
+      "totalClients": "Total de Clientes",
+      "monthlyRevenue": "Receita Mensal",
+      "completionRate": "Taxa de Conclusão"
+    },
+    "charts": {
+      "revenueOverTime": "Receita ao Longo do Tempo",
+      "contractsByStatus": "Contratos por Status",
+      "topClients": "Principais Clientes",
+      "performanceObligations": "Obrigações de Performance"
+    }
+  },
+  "reports": {
+    "title": "Relatórios",
+    "subtitle": "Relatórios e análises IFRS 15",
+    "generate": "Gerar Relatório",
+    "export": "Exportar",
+    "types": {
+      "contracts": "Relatório de Contratos",
+      "revenue": "Relatório de Receitas",
+      "clients": "Relatório de Clientes",
+      "audit": "Relatório de Auditoria",
+      "compliance": "Relatório de Conformidade"
+    },
+    "formats": {
+      "pdf": "PDF",
+      "excel": "Excel",
+      "csv": "CSV"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "subtitle": "Configurações do sistema",
+    "general": "Geral",
+    "security": "Segurança",
+    "notifications": "Notificações",
+    "integrations": "Integrações",
+    "language": "Idioma",
+    "theme": "Tema",
+    "timezone": "Fuso Horário"
+  }
+}

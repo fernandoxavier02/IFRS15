@@ -1,0 +1,56 @@
+// ============================================================================
+// IFRS 15 - COST TRACKING (Custos)
+// ============================================================================
+
+model IncrementalCost {
+  id                    String              @id @default(uuid())
+  tenantId              String
+  contractId            String
+  costType              IncrementalCostType
+  description           String
+  amount                Decimal             @db.Decimal(15, 2)
+  currency              String              @db.Char(3)
+  incurredDate          DateTime
+  amortizationPeriod    Int?                // months
+  amortizedAmount       Decimal             @default(0) @db.Decimal(15, 2)
+  remainingAmount       Decimal             @db.Decimal(15, 2)
+  impairmentAmount      Decimal?            @db.Decimal(15, 2)
+  recoveryTestDate      DateTime?
+  isRecoverable         Boolean             @default(true)
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  // Relations
+  tenant              Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract            Contract            @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  amortizationEntries AmortizationEntry[]
+
+  @@map("incremental_costs")
+}
+
+model AmortizationEntry {
+  id                 String          @id @default(uuid())
+  incrementalCostId  String
+  period             String          // YYYY-MM format
+  amortizationAmount Decimal         @db.Decimal(15, 2)
+  amortizationDate   DateTime
+  journalEntryId     String?
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  // Relations
+  incrementalCost IncrementalCost @relation(fields: [incrementalCostId], references: [id], onDelete: Cascade)
+
+  @@map("amortization_entries")
+}
+
+// Enums for Cost Tracking
+enum IncrementalCostType {
+  SALES_COMMISSION
+  LEGAL_FEES
+  DUE_DILIGENCE
+  CONTRACT_PREPARATION
+  TRAVEL_COSTS
+  TECHNICAL_SETUP
+  OTHER_INCREMENTAL
+}

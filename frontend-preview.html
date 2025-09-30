@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFRS 15 Revenue Recognition - Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .toolbar {
+            background-color: #3f51b5;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .toolbar .material-icons {
+            margin-right: 10px;
+        }
+        
+        .toolbar h1 {
+            flex: 1;
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .nav-button {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .nav-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .nav-button.active {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .content {
+            padding: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .card-content {
+            padding: 24px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 24px;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 500;
+            color: #3f51b5;
+            margin: 16px 0;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .ifrs15-steps {
+            margin-top: 32px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .step-number {
+            background: #3f51b5;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .step-content h3 {
+            margin: 0 0 8px 0;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .step-content p {
+            margin: 0;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .status-chip {
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-ativo {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status-em_andamento {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+        
+        .status-concluido {
+            background-color: #e8f5e8;
+            color: #388e3c;
+        }
+        
+        .progress-bar {
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            height: 8px;
+            overflow: hidden;
+            margin-right: 8px;
+            flex: 1;
+        }
+        
+        .progress-fill {
+            background-color: #4caf50;
+            height: 100%;
+            transition: width 0.3s;
+        }
+        
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            color: #666;
+            min-width: 35px;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .amount {
+            font-size: 2em;
+            font-weight: 500;
+            margin-top: 16px;
+        }
+        
+        .amount.recognized {
+            color: #4caf50;
+        }
+        
+        .amount.pending {
+            color: #ff9800;
+        }
+        
+        .btn {
+            background-color: #3f51b5;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #303f9f;
+        }
+        
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .material-icons {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <span class="material-icons">account_balance</span>
+        <h1>IFRS 15 Revenue Recognition</h1>
+        <div class="nav-buttons">
+            <button class="nav-button active" onclick="showPage('dashboard')">Dashboard</button>
+            <button class="nav-button" onclick="showPage('contracts')">Contratos</button>
+            <button class="nav-button" onclick="showPage('revenue')">Receitas</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Dashboard Page -->
+        <div id="dashboard" class="page active">
+            <h1>Dashboard IFRS 15</h1>
+            
+            <div class="dashboard-grid">
+                <div class="card stat-card">
+                    <span class="material-icons" style="font-size: 48px; color: #3f51b5;">description</span>
+                    <div class="stat-value">15</div>
+                    <div class="stat-label">Contratos Ativos</div>
+                </div>
+                
+                <div class="card stat-card">
+                    <span class="material-icons" style="font-size: 48px; color: #4caf50;">monetization_on</span>
+                    <div class="stat-value">R$ 2.450.000</div>
+                    <div class="stat-label">Receitas Reconhecidas</div>
+                </div>
+                
+                <div class="card stat-card">
+                    <span class="material-icons" style="font-size: 48px; color: #ff9800;">assessment</span>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Relatórios Pendentes</div>
+                </div>
+            </div>
+
+            <div class="ifrs15-steps">
+                <h2>5 Passos IFRS 15</h2>
+                <div class="card">
+                    <div class="card-content">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>Identificar o contrato com o cliente</h3>
+                                <p>Determinar se existe um contrato válido e executável</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>Identificar as obrigações de performance</h3>
+                                <p>Identificar bens ou serviços distintos prometidos ao cliente</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>Determinar o preço da transação</h3>
+                                <p>Calcular o valor da contraprestação esperada</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h3>Alocar o preço às obrigações</h3>
+                                <p>Distribuir o preço entre as obrigações de performance</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">5</div>
+                            <div class="step-content">
+                                <h3>Reconhecer a receita</h3>
+                                <p>Reconhecer quando as obrigações são satisfeitas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contracts Page -->
+        <div id="contracts" class="page">
+            <div class="header-actions">
+                <h1>Contratos</h1>
+                <button class="btn btn-icon">
+                    <span class="material-icons">add</span>
+                    Novo Contrato
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-content">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Valor</th>
+                                <th>Status</th>
+                                <th>Data Início</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CTR-001</td>
+                                <td>Empresa ABC Ltda</td>
+                                <td>R$ 150.000,00</td>
+                                <td><span class="status-chip status-ativo">Ativo</span></td>
+                                <td>15/01/2024</td>
+                                <td>
+                                    <span class="material-icons" style="cursor: pointer; margin-right: 8px;">edit</span>
+                                    <span class="material-icons" style="cursor: pointer;">visibility</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CTR-002</td>
+                                <td>Corporação XYZ S.A.</td>
+                                <td>R$ 280.000,00</td>
+                                <td><span class="status-chip status-em_andamento">Em Andamento</span></td>
+                                <td>01/02/2024</td>
+                                <td>
+                                    <span class="material-icons" style="cursor: pointer; margin-right: 8px;">edit</span>
+                                    <span class="material-icons" style="cursor: pointer;">visibility</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CTR-003</td>
+                                <td>Indústria 123 Ltda</td>
+                                <td>R$ 95.000,00</td>
+                                <td><span class="status-chip status-concluido">Concluído</span></td>
+                                <td>10/12/2023</td>
+                                <td>
+                                    <span class="material-icons" style="cursor: pointer; margin-right: 8px;">edit</span>
+                                    <span class="material-icons" style="cursor: pointer;">visibility</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Page -->
+        <div id="revenue" class="page">
+            <div class="header-actions">
+                <h1>Reconhecimento de Receitas</h1>
+                <button class="btn btn-icon">
+                    <span class="material-icons">calculate</span>
+                    Calcular Receitas
+                </button>
+            </div>
+
+            <div class="summary-cards">
+                <div class="card">
+                    <div class="card-content" style="text-align: center;">
+                        <h3>Receita Total Reconhecida</h3>
+                        <div class="amount recognized">R$ 2.450.000,00</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content" style="text-align: center;">
+                        <h3>Receita Pendente</h3>
+                        <div class="amount pending">R$ 525.000,00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Obrigações de Performance</h3>
+                </div>
+                <div class="card-content">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Contrato</th>
+                                <th>Descrição</th>
+                                <th>Preço Alocado</th>
+                                <th>Progresso</th>
+                                <th>Receita Reconhecida</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>CTR-001</td>
+                                <td>Desenvolvimento de Software</td>
+                                <td>R$ 100.000,00</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 75%;"></div>
+                                        </div>
+                                        <span class="progress-text">75%</span>
+                                    </div>
+                                </td>
+                                <td>R$ 75.000,00</td>
+                                <td>
+                                    <span class="material-icons" style="cursor: pointer;">timeline</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CTR-001</td>
+                                <td>Treinamento e Suporte</td>
+                                <td>R$ 50.000,00</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 40%;"></div>
+                                        </div>
+                                        <span class="progress-text">40%</span>
+                                    </div>
+                                </td>
+                                <td>R$ 20.000,00</td>
+                                <td>
+                                    <span class="material-icons" style="cursor: pointer;">timeline</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CTR-002</td>
+                                <td>Consultoria Especializada</td>
+                                <td>R$ 180.000,00</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 90%;"></div>
+                                        </div>
+                                        <span class="progress-text">90%</span>
+                                    </div>
+                                </td>
+                                <td>R$ 162.000,00</td>
+                                <td>
+                                    <span class="material-icons" style="cursor: pointer;">timeline</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>CTR-002</td>
+                                <td>Implementação</td>
+                                <td>R$ 100.000,00</td>
+                                <td>
+                                    <div class="progress-container">
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 60%;"></div>
+                                        </div>
+                                        <span class="progress-text">60%</span>
+                                    </div>
+                                </td>
+                                <td>R$ 60.000,00</td>
+                                <td>
+                                    <span class="material-icons" style="cursor: pointer;">timeline</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update navigation buttons
+            const buttons = document.querySelectorAll('.nav-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

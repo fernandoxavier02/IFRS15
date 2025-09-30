@@ -1,0 +1,354 @@
+.clients-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  
+  .header-content {
+    h1 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      font-weight: 500;
+      color: #1976d2;
+      
+      mat-icon {
+        font-size: 32px;
+        width: 32px;
+        height: 32px;
+      }
+    }
+    
+    .page-description {
+      margin: 0;
+      color: #666;
+      font-size: 14px;
+    }
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 12px;
+    
+    button {
+      min-width: 120px;
+    }
+  }
+}
+
+.filters-card {
+  margin-bottom: 24px;
+  
+  .filters-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    
+    .search-field {
+      flex: 2;
+      min-width: 300px;
+    }
+    
+    mat-form-field {
+      flex: 1;
+      min-width: 150px;
+    }
+    
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.table-card {
+  margin-bottom: 24px;
+  
+  .table-container {
+    position: relative;
+    min-height: 400px;
+    
+    .clients-table {
+      width: 100%;
+      
+      .table-row {
+        cursor: pointer;
+        transition: background-color 0.2s;
+        
+        &:hover {
+          background-color: #f5f5f5;
+        }
+      }
+      
+      .client-info {
+        .client-name {
+          font-weight: 500;
+          margin-bottom: 4px;
+        }
+        
+        .client-document {
+          font-size: 12px;
+          color: #666;
+        }
+      }
+      
+      .email-link {
+        color: #1976d2;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+      
+      .contracts-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        
+        .contracts-count {
+          font-weight: 500;
+          color: #1976d2;
+        }
+      }
+      
+      .valor-total {
+        font-weight: 600;
+        color: #4caf50;
+      }
+      
+      .actions-container {
+        display: flex;
+        gap: 4px;
+        
+        button {
+          width: 32px;
+          height: 32px;
+          line-height: 32px;
+          
+          mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: #666;
+  
+  mat-icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    color: #ccc;
+  }
+  
+  h3 {
+    margin: 0 0 8px 0;
+    font-weight: 500;
+  }
+  
+  p {
+    margin: 0 0 24px 0;
+    font-size: 14px;
+  }
+}
+
+.summary-section {
+  margin-top: 24px;
+  
+  .summary-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    
+    .summary-card {
+      .metric {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        
+        mat-icon {
+          font-size: 32px;
+          width: 32px;
+          height: 32px;
+          color: #1976d2;
+        }
+        
+        .metric-content {
+          .metric-value {
+            display: block;
+            font-size: 24px;
+            font-weight: 600;
+            color: #1976d2;
+            line-height: 1.2;
+          }
+          
+          .metric-label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Status chips
+.mat-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Responsive design
+@media (max-width: 1024px) {
+  .page-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+    
+    .header-actions {
+      justify-content: flex-end;
+    }
+  }
+  
+  .filters-row {
+    flex-direction: column;
+    align-items: stretch !important;
+    
+    .filter-actions {
+      margin-bottom: 0 !important;
+      justify-content: flex-end;
+    }
+  }
+  
+  .summary-cards {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .clients-container {
+    padding: 16px;
+  }
+  
+  .page-header {
+    .header-content h1 {
+      font-size: 24px;
+      
+      mat-icon {
+        font-size: 28px;
+        width: 28px;
+        height: 28px;
+      }
+    }
+    
+    .header-actions {
+      flex-direction: column;
+      
+      button {
+        width: 100%;
+      }
+    }
+  }
+  
+  .clients-table {
+    .mat-column-documento,
+    .mat-column-email {
+      display: none;
+    }
+  }
+  
+  .summary-cards {
+    grid-template-columns: 1fr 1fr !important;
+    
+    .summary-card .metric {
+      flex-direction: column;
+      text-align: center;
+      gap: 8px;
+      
+      .metric-content {
+        .metric-value {
+          font-size: 20px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .clients-table {
+    .mat-column-totalContratos,
+    .mat-column-valorTotal {
+      display: none;
+    }
+  }
+  
+  .summary-cards {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+// Material theme overrides
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(0, 0, 0, 0.12);
+}
+
+.mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #1976d2;
+}
+
+.mat-paginator {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 16px;
+}
+
+// Loading states
+.mat-table-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// Accessibility
+.mat-table .mat-row:focus {
+  outline: 2px solid #1976d2;
+  outline-offset: -2px;
+}
+
+button:focus {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}

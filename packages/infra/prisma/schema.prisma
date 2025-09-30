@@ -1,0 +1,1068 @@
+// ============================================================================
+// IFRS 15 REVENUE RECOGNITION - COMPLETE DOMAIN MODEL
+// Comprehensive schema implementing all 5 steps of IFRS 15
+// ============================================================================
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// CORE ENTITIES - Step 1: Identify the Contract
+// ============================================================================
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  domain    String   @unique
+  isActive  Boolean  @default(true)
+  settings  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations - All IFRS 15 entities
+  users                            User[]
+  customers                        Customer[]
+  contracts                        Contract[]
+  contractModifications            ContractModification[]
+  performanceObligations           PerformanceObligation[]
+  promises                         Promise[]
+  transactionPrices                TransactionPrice[]
+  variableConsiderations           VariableConsideration[]
+  variableConsiderationConstraints VariableConsiderationConstraint[]
+  significantFinancingComponents   SignificantFinancingComponent[]
+  materialRights                   MaterialRight[]
+  warranties                       Warranty[]
+  principalAgentAnalyses           PrincipalAgentAnalysis[]
+  nonCashConsiderations            NonCashConsideration[]
+  foreignCurrencyTransactions      ForeignCurrencyTransaction[]
+  returnRefundOptions              ReturnRefundOption[]
+  softwareLicenses                 SoftwareLicense[]
+  nonRefundableUpfrontFees         NonRefundableUpfrontFee[]
+  consignmentArrangements          ConsignmentArrangement[]
+  standalonePrices                 StandalonePrice[]
+  priceAllocations                 PriceAllocation[]
+  revenueSchedules                 RevenueSchedule[]
+  progressMethods                  ProgressMethod[]
+  contractAssets                   ContractAsset[]
+  contractLiabilities              ContractLiability[]
+  refundLiabilities                RefundLiability[]
+  estimatedProvisions              EstimatedProvision[]
+  incrementalCosts                 IncrementalCost[]
+  invoices                         Invoice[]
+  billingSchedules                 BillingSchedule[]
+  receipts                         Receipt[]
+  auditTrails                      AuditTrail[]
+  policySnapshots                  PolicySnapshot[]
+
+  @@map("tenants")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  tenantId  String
+  email     String
+  name      String
+  roles     String[]
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  auditTrails AuditTrail[]
+
+  @@unique([email, tenantId])
+  @@map("users")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  tenantId  String
+  name      String
+  email     String?
+  taxId     String?
+  address   Json?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contracts Contract[]
+
+  @@map("customers")
+}
+
+model Contract {
+  id                     String         @id @default(uuid())
+  tenantId               String
+  customerId             String
+  contractNumber         String
+  title                  String
+  description            String?
+  startDate              DateTime
+  endDate                DateTime?
+  totalValue             Decimal        @db.Decimal(15, 2)
+  currency               String         @db.Char(3)
+  status                 ContractStatus @default(DRAFT)
+  hasCommercialSubstance Boolean        @default(true)
+  isEnforceable          Boolean        @default(true)
+  enforcementPeriodStart DateTime?
+  enforcementPeriodEnd   DateTime?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+
+  // Relations
+  tenant                           Tenant                            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  customer                         Customer                          @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  modifications                    ContractModification[]
+  clauses                          Clause[]
+  performanceObligations           PerformanceObligation[]
+  promises                         Promise[]
+  transactionPrices                TransactionPrice[]
+  variableConsiderations           VariableConsideration[]
+  variableConsiderationConstraints VariableConsiderationConstraint[]
+  significantFinancingComponents   SignificantFinancingComponent[]
+  materialRights                   MaterialRight[]
+  warranties                       Warranty[]
+  principalAgentAnalyses           PrincipalAgentAnalysis[]
+  nonCashConsiderations            NonCashConsideration[]
+  foreignCurrencyTransactions      ForeignCurrencyTransaction[]
+  returnRefundOptions              ReturnRefundOption[]
+  softwareLicenses                 SoftwareLicense[]
+  nonRefundableUpfrontFees         NonRefundableUpfrontFee[]
+  consignmentArrangements          ConsignmentArrangement[]
+  priceAllocations                 PriceAllocation[]
+  revenueSchedules                 RevenueSchedule[]
+  contractAssets                   ContractAsset[]
+  contractLiabilities              ContractLiability[]
+  refundLiabilities                RefundLiability[]
+  estimatedProvisions              EstimatedProvision[]
+  incrementalCosts                 IncrementalCost[]
+  invoices                         Invoice[]
+  billingSchedules                 BillingSchedule[]
+
+  @@unique([contractNumber, tenantId])
+  @@map("contracts")
+}
+
+model ContractModification {
+  id                 String                   @id @default(uuid())
+  tenantId           String
+  contractId         String
+  modificationNumber String
+  description        String
+  effectiveDate      DateTime
+  modificationType   ContractModificationType
+  priceChange        Decimal?                 @db.Decimal(15, 2)
+  scopeChange        String?
+  isApproved         Boolean                  @default(false)
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@unique([modificationNumber, contractId])
+  @@map("contract_modifications")
+}
+
+model Clause {
+  id          String     @id @default(uuid())
+  contractId  String
+  clauseType  ClauseType
+  title       String
+  description String
+  terms       Json
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // Relations
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("clauses")
+}
+
+// ============================================================================
+// STEP 2: Performance Obligations & Promises
+// ============================================================================
+
+model PerformanceObligation {
+  id                      String             @id @default(uuid())
+  tenantId                String
+  contractId              String
+  description             String
+  allocatedAmount         Decimal            @db.Decimal(15, 2)
+  recognizedAmount        Decimal            @default(0) @db.Decimal(15, 2)
+  isDistinct              Boolean            @default(true)
+  satisfactionMethod      SatisfactionMethod
+  satisfactionTiming      SatisfactionTiming
+  estimatedCompletionDate DateTime?
+  completionPercentage    Decimal?           @db.Decimal(5, 2)
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  // Relations
+  tenant              Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract            Contract            @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  promises            Promise[]
+  revenueSchedules    RevenueSchedule[]
+  progressMethods     ProgressMethod[]
+  contractAssets      ContractAsset[]
+  contractLiabilities ContractLiability[]
+
+  @@map("performance_obligations")
+}
+
+model Promise {
+  id                      String      @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String?
+  promiseType             PromiseType
+  description             String
+  goodsOrServices         String
+  isDistinct              Boolean     @default(true)
+  bundleIdentifier        String?
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+
+  // Relations
+  tenant                Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation? @relation(fields: [performanceObligationId], references: [id], onDelete: SetNull)
+
+  @@map("promises")
+}
+
+// ============================================================================
+// STEP 3: Transaction Price Components
+// ============================================================================
+
+model TransactionPrice {
+  id                  String   @id @default(uuid())
+  tenantId            String
+  contractId          String
+  baseAmount          Decimal  @db.Decimal(15, 2)
+  currency            String   @db.Char(3)
+  variableAmount      Decimal? @db.Decimal(15, 2)
+  constrainedAmount   Decimal? @db.Decimal(15, 2)
+  financingAdjustment Decimal? @db.Decimal(15, 2)
+  nonCashAdjustment   Decimal? @db.Decimal(15, 2)
+  totalAmount         Decimal  @db.Decimal(15, 2)
+  calculationDate     DateTime @default(now())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("transaction_prices")
+}
+
+model VariableConsideration {
+  id                    String                      @id @default(uuid())
+  tenantId              String
+  contractId            String
+  description           String
+  estimationMethod      VariableConsiderationMethod
+  expectedValue         Decimal?                    @db.Decimal(15, 2)
+  mostLikelyAmount      Decimal?                    @db.Decimal(15, 2)
+  constraintApplied     Boolean                     @default(false)
+  constraintReason      String?
+  probabilityAssessment Json?
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("variable_considerations")
+}
+
+model VariableConsiderationConstraint {
+  id                   String    @id @default(uuid())
+  tenantId             String
+  contractId           String
+  constraintType       String
+  description          String
+  constrainedAmount    Decimal   @db.Decimal(15, 2)
+  reasonForConstraint  String
+  reassessmentTrigger  String?
+  nextReassessmentDate DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("variable_consideration_constraints")
+}
+
+model SignificantFinancingComponent {
+  id               String   @id @default(uuid())
+  tenantId         String
+  contractId       String
+  description      String
+  interestRate     Decimal  @db.Decimal(8, 4)
+  presentValue     Decimal  @db.Decimal(15, 2)
+  nominalValue     Decimal  @db.Decimal(15, 2)
+  financingPeriod  Int // months
+  adjustmentAmount Decimal  @db.Decimal(15, 2)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("significant_financing_components")
+}
+
+model MaterialRight {
+  id                      String   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  description             String
+  rightType               String
+  expectedExercise        Boolean  @default(false)
+  exerciseProbability     Decimal? @db.Decimal(5, 2)
+  standalonePriceEstimate Decimal? @db.Decimal(15, 2)
+  allocationMethod        String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("material_rights")
+}
+
+model Warranty {
+  id            String       @id @default(uuid())
+  tenantId      String
+  contractId    String
+  warrantyType  WarrantyType
+  description   String
+  period        Int // months
+  coverage      String
+  isAssurance   Boolean      @default(true)
+  serviceAmount Decimal?     @db.Decimal(15, 2)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("warranties")
+}
+
+model PrincipalAgentAnalysis {
+  id                String             @id @default(uuid())
+  tenantId          String
+  contractId        String
+  analysisType      PrincipalAgentType
+  description       String
+  controlIndicators Json
+  conclusion        String
+  grossAmount       Decimal?           @db.Decimal(15, 2)
+  netAmount         Decimal?           @db.Decimal(15, 2)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("principal_agent_analyses")
+}
+
+model NonCashConsideration {
+  id                String   @id @default(uuid())
+  tenantId          String
+  contractId        String
+  description       String
+  considerationType String
+  fairValue         Decimal  @db.Decimal(15, 2)
+  valuationMethod   String
+  valuationDate     DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("non_cash_considerations")
+}
+
+model ForeignCurrencyTransaction {
+  id               String   @id @default(uuid())
+  tenantId         String
+  contractId       String
+  originalCurrency String   @db.Char(3)
+  originalAmount   Decimal  @db.Decimal(15, 2)
+  exchangeRate     Decimal  @db.Decimal(10, 6)
+  functionalAmount Decimal  @db.Decimal(15, 2)
+  transactionDate  DateTime
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("foreign_currency_transactions")
+}
+
+model ReturnRefundOption {
+  id                String   @id @default(uuid())
+  tenantId          String
+  contractId        String
+  optionType        String
+  description       String
+  returnPeriod      Int? // days
+  refundAmount      Decimal? @db.Decimal(15, 2)
+  returnProbability Decimal? @db.Decimal(5, 2)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("return_refund_options")
+}
+
+model SoftwareLicense {
+  id            String              @id @default(uuid())
+  tenantId      String
+  contractId    String
+  licenseType   SoftwareLicenseType
+  description   String
+  rightType     String // right_to_use vs right_to_access
+  functionality String
+  isDistinct    Boolean             @default(true)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("software_licenses")
+}
+
+model NonRefundableUpfrontFee {
+  id                 String   @id @default(uuid())
+  tenantId           String
+  contractId         String
+  feeType            String
+  description        String
+  amount             Decimal  @db.Decimal(15, 2)
+  allocationMethod   String
+  recognitionPattern String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("non_refundable_upfront_fees")
+}
+
+model ConsignmentArrangement {
+  id                 String   @id @default(uuid())
+  tenantId           String
+  contractId         String
+  description        String
+  controlTransfer    String
+  inventoryLocation  String
+  recognitionTrigger String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("consignment_arrangements")
+}
+
+// ============================================================================
+// STEP 4: Price Allocation
+// ============================================================================
+
+model StandalonePrice {
+  id               String                @id @default(uuid())
+  tenantId         String
+  goodOrService    String
+  description      String
+  price            Decimal               @db.Decimal(15, 2)
+  currency         String                @db.Char(3)
+  estimationMethod StandalonePriceMethod
+  observablePrice  Boolean               @default(false)
+  marketEvidence   String?
+  effectiveDate    DateTime
+  expirationDate   DateTime?
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  // Relations
+  tenant           Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  priceAllocations PriceAllocation[]
+
+  @@map("standalone_prices")
+}
+
+model PriceAllocation {
+  id                      String           @id @default(uuid())
+  tenantId                String
+  contractId              String
+  standalonePriceId       String
+  performanceObligationId String?
+  description             String
+  allocationMethod        AllocationMethod
+  allocatedAmount         Decimal          @db.Decimal(15, 2)
+  allocationPercentage    Decimal          @db.Decimal(5, 2)
+  discountAllocation      Decimal?         @db.Decimal(15, 2)
+  variableAllocation      Decimal?         @db.Decimal(15, 2)
+  createdAt               DateTime         @default(now())
+  updatedAt               DateTime         @updatedAt
+
+  // Relations
+  tenant          Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract        Contract        @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  standalonePrice StandalonePrice @relation(fields: [standalonePriceId], references: [id], onDelete: Cascade)
+
+  @@map("price_allocations")
+}
+
+// ============================================================================
+// STEP 5: Revenue Recognition
+// ============================================================================
+
+model RevenueSchedule {
+  id                      String                   @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String
+  scheduleType            RevenueScheduleType
+  recognitionMethod       RevenueRecognitionMethod
+  amount                  Decimal                  @db.Decimal(15, 2)
+  recognitionDate         DateTime
+  period                  String // YYYY-MM format
+  description             String?
+  status                  RevenueRecognitionStatus @default(PENDING)
+  journalEntryId          String?
+  createdAt               DateTime                 @default(now())
+  updatedAt               DateTime                 @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract              @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("revenue_schedules")
+}
+
+model ProgressMethod {
+  id                      String             @id @default(uuid())
+  tenantId                String
+  performanceObligationId String
+  methodType              ProgressMethodType
+  description             String
+  inputMethod             String? // cost-to-cost, labor-hours, etc.
+  outputMethod            String? // units, value delivered, etc.
+  totalInput              Decimal?           @db.Decimal(15, 2)
+  completedInput          Decimal?           @db.Decimal(15, 2)
+  totalOutput             Decimal?           @db.Decimal(15, 2)
+  completedOutput         Decimal?           @db.Decimal(15, 2)
+  progressPercentage      Decimal            @db.Decimal(5, 2)
+  measurementDate         DateTime
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
+
+  // Relations
+  tenant                Tenant                @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation @relation(fields: [performanceObligationId], references: [id], onDelete: Cascade)
+
+  @@map("progress_methods")
+}
+
+// ============================================================================
+// BALANCE SHEET ITEMS
+// ============================================================================
+
+model ContractAsset {
+  id                      String    @id @default(uuid())
+  tenantId                String
+  contractId              String
+  performanceObligationId String?
+  description             String
+  amount                  Decimal   @db.Decimal(15, 2)
+  currency                String    @db.Char(3)
+  recognitionDate         DateTime
+  expectedConversionDate  DateTime?
+  impairmentAmount        Decimal?  @db.Decimal(15, 2)
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+
+  // Relations
+  tenant                Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation? @relation(fields: [performanceObligationId], references: [id], onDelete: SetNull)
+
+  @@map("contract_assets")
+}
+
+model ContractLiability {
+  id                       String    @id @default(uuid())
+  tenantId                 String
+  contractId               String
+  performanceObligationId  String?
+  description              String
+  amount                   Decimal   @db.Decimal(15, 2)
+  currency                 String    @db.Char(3)
+  recognitionDate          DateTime
+  expectedSatisfactionDate DateTime?
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  // Relations
+  tenant                Tenant                 @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  performanceObligation PerformanceObligation? @relation(fields: [performanceObligationId], references: [id], onDelete: SetNull)
+
+  @@map("contract_liabilities")
+}
+
+model RefundLiability {
+  id                 String    @id @default(uuid())
+  tenantId           String
+  contractId         String
+  description        String
+  amount             Decimal   @db.Decimal(15, 2)
+  currency           String    @db.Char(3)
+  refundProbability  Decimal   @db.Decimal(5, 2)
+  expectedRefundDate DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("refund_liabilities")
+}
+
+model EstimatedProvision {
+  id            String        @id @default(uuid())
+  tenantId      String
+  contractId    String
+  provisionType ProvisionType
+  description   String
+  amount        Decimal       @db.Decimal(15, 2)
+  currency      String        @db.Char(3)
+  probability   Decimal       @db.Decimal(5, 2)
+  expectedDate  DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("estimated_provisions")
+}
+
+// ============================================================================
+// COST TRACKING
+// ============================================================================
+
+model IncrementalCost {
+  id                 String              @id @default(uuid())
+  tenantId           String
+  contractId         String
+  costType           IncrementalCostType
+  description        String
+  amount             Decimal             @db.Decimal(15, 2)
+  currency           String              @db.Char(3)
+  incurredDate       DateTime
+  amortizationPeriod Int? // months
+  amortizedAmount    Decimal             @default(0) @db.Decimal(15, 2)
+  remainingAmount    Decimal             @db.Decimal(15, 2)
+  impairmentAmount   Decimal?            @db.Decimal(15, 2)
+  recoveryTestDate   DateTime?
+  isRecoverable      Boolean             @default(true)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  // Relations
+  tenant              Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract            Contract            @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  amortizationEntries AmortizationEntry[]
+
+  @@map("incremental_costs")
+}
+
+model AmortizationEntry {
+  id                 String   @id @default(uuid())
+  incrementalCostId  String
+  period             String // YYYY-MM format
+  amortizationAmount Decimal  @db.Decimal(15, 2)
+  amortizationDate   DateTime
+  journalEntryId     String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  incrementalCost IncrementalCost @relation(fields: [incrementalCostId], references: [id], onDelete: Cascade)
+
+  @@map("amortization_entries")
+}
+
+// ============================================================================
+// BILLING & INVOICING
+// ============================================================================
+
+model Invoice {
+  id             String        @id @default(uuid())
+  tenantId       String
+  contractId     String
+  invoiceNumber  String
+  description    String?
+  amount         Decimal       @db.Decimal(15, 2)
+  currency       String        @db.Char(3)
+  issueDate      DateTime
+  dueDate        DateTime
+  paidDate       DateTime?
+  status         InvoiceStatus @default(PENDING)
+  taxAmount      Decimal?      @db.Decimal(15, 2)
+  discountAmount Decimal?      @db.Decimal(15, 2)
+  totalAmount    Decimal       @db.Decimal(15, 2)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relations
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract  @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  receipts Receipt[]
+
+  @@unique([invoiceNumber, tenantId])
+  @@map("invoices")
+}
+
+model BillingSchedule {
+  id              String              @id @default(uuid())
+  tenantId        String
+  contractId      String
+  description     String
+  scheduleType    BillingScheduleType
+  frequency       BillingFrequency
+  amount          Decimal             @db.Decimal(15, 2)
+  currency        String              @db.Char(3)
+  startDate       DateTime
+  endDate         DateTime?
+  nextBillingDate DateTime
+  isActive        Boolean             @default(true)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  // Relations
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("billing_schedules")
+}
+
+model Receipt {
+  id            String        @id @default(uuid())
+  tenantId      String
+  invoiceId     String
+  receiptNumber String
+  amount        Decimal       @db.Decimal(15, 2)
+  currency      String        @db.Char(3)
+  paymentMethod PaymentMethod
+  paymentDate   DateTime
+  bankReference String?
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  tenant  Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@unique([receiptNumber, tenantId])
+  @@map("receipts")
+}
+
+// ============================================================================
+// AUDIT TRAIL
+// ============================================================================
+
+model AuditTrail {
+  id         String      @id @default(uuid())
+  tenantId   String
+  userId     String?
+  action     AuditAction
+  entityType String
+  entityId   String
+  oldValues  Json?
+  newValues  Json?
+  ipAddress  String?
+  userAgent  String?
+  sessionId  String?
+  timestamp  DateTime    @default(now())
+  createdAt  DateTime    @default(now())
+
+  // Relations
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_trails")
+}
+
+model PolicySnapshot {
+  id             String    @id @default(uuid())
+  tenantId       String
+  policyType     String
+  policyName     String
+  version        String
+  content        Json
+  effectiveDate  DateTime
+  expirationDate DateTime?
+  isActive       Boolean   @default(true)
+  createdBy      String
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([policyType, policyName, version, tenantId])
+  @@map("policy_snapshots")
+}
+
+// ============================================================================
+// ALL ENUMS
+// ============================================================================
+
+// Core Entities
+enum ContractStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  ON_HOLD
+  TERMINATED
+}
+
+enum ContractModificationType {
+  PRICE_CHANGE
+  SCOPE_CHANGE
+  TERM_EXTENSION
+  EARLY_TERMINATION
+  AMENDMENT
+}
+
+enum ClauseType {
+  TERMINATION
+  RESCISSION
+  ENFORCEMENT_PERIOD
+  PAYMENT_TERMS
+  DELIVERY_TERMS
+  WARRANTY
+  PENALTY
+  FORCE_MAJEURE
+  CONFIDENTIALITY
+  INTELLECTUAL_PROPERTY
+}
+
+// Performance Obligations
+enum SatisfactionMethod {
+  OVER_TIME
+  POINT_IN_TIME
+}
+
+enum SatisfactionTiming {
+  CONTINUOUS
+  MILESTONE_BASED
+  COMPLETION
+  DELIVERY
+  ACCEPTANCE
+  USAGE_BASED
+}
+
+enum PromiseType {
+  GOODS
+  SERVICES
+  LICENSES
+  OPTIONS
+  RIGHTS
+  WARRANTIES
+  FINANCING
+}
+
+// Transaction Price
+enum VariableConsiderationMethod {
+  EXPECTED_VALUE
+  MOST_LIKELY_AMOUNT
+}
+
+enum WarrantyType {
+  ASSURANCE
+  SERVICE
+  COMBINED
+}
+
+enum PrincipalAgentType {
+  PRINCIPAL
+  AGENT
+  MIXED
+}
+
+enum SoftwareLicenseType {
+  PERPETUAL
+  TERM
+  SUBSCRIPTION
+  USAGE_BASED
+}
+
+// Price Allocation
+enum StandalonePriceMethod {
+  OBSERVABLE_PRICE
+  ADJUSTED_MARKET_ASSESSMENT
+  EXPECTED_COST_PLUS_MARGIN
+  RESIDUAL_APPROACH
+}
+
+enum AllocationMethod {
+  RELATIVE_STANDALONE_PRICE
+  ADJUSTED_MARKET_ASSESSMENT
+  EXPECTED_COST_PLUS_MARGIN
+  RESIDUAL_APPROACH
+  DISCOUNT_ALLOCATION
+  VARIABLE_CONSIDERATION_ALLOCATION
+}
+
+// Revenue Recognition
+enum RevenueScheduleType {
+  POINT_IN_TIME
+  OVER_TIME
+  MILESTONE_BASED
+  USAGE_BASED
+}
+
+enum RevenueRecognitionMethod {
+  POINT_IN_TIME
+  OVER_TIME_INPUT
+  OVER_TIME_OUTPUT
+  MILESTONE
+  USAGE
+  STRAIGHT_LINE
+}
+
+enum RevenueRecognitionStatus {
+  PENDING
+  RECOGNIZED
+  REVERSED
+  ADJUSTED
+}
+
+enum ProgressMethodType {
+  INPUT_METHOD
+  OUTPUT_METHOD
+  TIME_ELAPSED
+}
+
+// Balance Sheet
+enum ProvisionType {
+  WARRANTY
+  RETURNS
+  PENALTIES
+  ONEROUS_CONTRACT
+  RESTRUCTURING
+  LEGAL_CLAIMS
+}
+
+// Cost Tracking
+enum IncrementalCostType {
+  SALES_COMMISSION
+  LEGAL_FEES
+  DUE_DILIGENCE
+  CONTRACT_PREPARATION
+  TRAVEL_COSTS
+  TECHNICAL_SETUP
+  OTHER_INCREMENTAL
+}
+
+// Billing & Invoicing
+enum InvoiceStatus {
+  DRAFT
+  PENDING
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+  REFUNDED
+}
+
+enum BillingScheduleType {
+  FIXED
+  MILESTONE_BASED
+  USAGE_BASED
+  PERCENTAGE_COMPLETION
+}
+
+enum BillingFrequency {
+  MONTHLY
+  QUARTERLY
+  SEMI_ANNUALLY
+  ANNUALLY
+  ON_DELIVERY
+  ON_MILESTONE
+  CUSTOM
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  CREDIT_CARD
+  CHECK
+  CASH
+  DIGITAL_WALLET
+  CRYPTOCURRENCY
+  OTHER
+}
+
+// Audit Trail
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  VIEW
+  EXPORT
+  IMPORT
+  APPROVE
+  REJECT
+  SUBMIT
+  CANCEL
+  REVERSE
+  ADJUST
+}
