@@ -1,18 +1,7 @@
-# IFRS 15 Revenue Recognition System
+# 🏦 IFRS 15 Revenue Recognition - Production-Ready Monorepo
 
-A production-ready monorepo for IFRS 15 compliant revenue recognition with Angular frontend, NestJS backend, and comprehensive observability.
-
-## 🏗️ Architecture Overview
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Angular Web   │    │   NestJS API    │    │   PostgreSQL    │
-│   (Frontend)    │◄──►│   (Backend)     │◄──►│   (Database)    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                  # 🏦 IFRS 15 Revenue Recognition - Production-Ready Monorepo
-
-[![CI/CD Pipeline](https://github.com/your-org/ifrs15/workflows/IFRS%2015%20CI%2FCD%20Pipeline/badge.svg)](https://github.com/your-org/ifrs15/actions)
-[![codecov](https://codecov.io/gh/your-org/ifrs15/branch/main/graph/badge.svg)](https://codecov.io/gh/your-org/ifrs15)
+[![CI/CD Pipeline](https://github.com/fernandoxavier02/IFRS15/workflows/IFRS%2015%20CI%2FCD%20Pipeline/badge.svg)](https://github.com/fernandoxavier02/IFRS15/actions)
+[![codecov](https://codecov.io/gh/fernandoxavier02/IFRS15/branch/main/graph/badge.svg)](https://codecov.io/gh/fernandoxavier02/IFRS15)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
 
@@ -26,6 +15,8 @@ A comprehensive, production-ready monorepo for IFRS 15 Revenue Recognition syste
 - ✅ **Contract Management** - Performance obligations tracking and validation
 - ✅ **Revenue Recognition** - Automated allocation and timing calculations
 - ✅ **Audit Logging** - Comprehensive compliance and audit trails
+- ✅ **Global Error Handling** - Comprehensive error management system
+- ✅ **Enhanced UX Components** - Modern UI components for better user experience
 
 ### 🏗️ **Architecture & Technology**
 - ✅ **Frontend**: Angular 17 + Angular Material + i18n (pt-BR/en)
@@ -41,6 +32,22 @@ A comprehensive, production-ready monorepo for IFRS 15 Revenue Recognition syste
 - ✅ **Testing**: Jest + Vitest + Pact + E2E + Performance tests
 - ✅ **CI/CD**: GitHub Actions with security scanning and deployment
 - ✅ **Documentation**: Swagger/OpenAPI + Comprehensive guides
+
+## 🏗️ Architecture Overview
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Angular Web   │    │   NestJS API    │    │   PostgreSQL    │
+│   (Frontend)    │◄──►│   (Backend)     │◄──►│   (Database)    │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 │
+                    ┌─────────────────┐
+                    │   Observability │
+                    │ (Metrics/Logs)  │
+                    └─────────────────┘
+```
 
 ## 📁 **Monorepo Structure**
 
