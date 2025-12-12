@@ -2,21 +2,17 @@ import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ClientsApiService } from '../../shared/services/api.service';
+import { CustomersService, Customer } from '../../shared/services/customers.service';
 import { AuthService } from '../../shared/guards/rbac.guard';
 
-export interface Client {
-  id: string;
-  nome: string;
-  documento: string;
-  email: string;
-  telefone: string;
-  endereco: string;
-  status: 'ativo' | 'inativo' | 'suspenso';
-  totalContratos: number;
-  valorTotal: number;
-  createdAt: Date;
-  updatedAt: Date;
+// Legacy interface for compatibility - map to new Customer interface
+export interface Client extends Customer {
+  nome?: string;
+  documento?: string;
+  telefone?: string;
+  endereco?: string;
+  totalContratos?: number;
+  valorTotal?: number;
 }
 
 @Component({
@@ -65,7 +61,7 @@ export class ClientsListComponent implements OnInit {
   ];
 
   constructor(
-    private apiService: ClientsApiService,
+    private customersService: CustomersService,
     private authService: AuthService,
     private router: Router
   ) {}
@@ -83,16 +79,27 @@ export class ClientsListComponent implements OnInit {
   loadClients(): void {
     this.loading = true;
     
-    const filters = {
-      search: this.searchTerm,
-      status: this.statusFilter
+    const params = {
+      skip: (this.currentPage - 1) * this.pageSize,
+      take: this.pageSize,
+      ...(this.searchTerm && { search: this.searchTerm })
     };
 
-    this.apiService.getClients(this.currentPage, this.pageSize, filters).subscribe({
+    this.customersService.getCustomers(params).subscribe({
       next: (response) => {
-        this.clients = response.items || [];
+        // Map Customer to Client interface for compatibility
+        this.clients = response.data.map(customer => ({
+          ...customer,
+          nome: customer.name,
+          documento: customer.taxId || '',
+          telefone: '',
+          endereco: customer.address ? JSON.stringify(customer.address) : '',
+          status: customer.isActive ? 'ativo' as const : 'inativo' as const,
+          totalContratos: customer.contracts?.length || 0,
+          valorTotal: 0
+        }));
         this.filteredClients = [...this.clients];
-        this.totalItems = response.total || 0;
+        this.totalItems = response.meta.total;
         this.totalPages = Math.ceil(this.totalItems / this.pageSize);
         this.loading = false;
       },
@@ -188,25 +195,39 @@ export class ClientsListComponent implements OnInit {
   }
 
   deleteClient(client: Client): void {
-    const confirmed = confirm(`Tem certeza que deseja excluir o cliente "${client.nome}"?`);
+    const confirmed = confirm(`Tem certeza que deseja excluir o cliente "${client.nome || client.name}"?`);
     
     if (confirmed) {
-      // Simulating API call - in a real app, this would call the API
-      const index = this.clients.findIndex(c => c.id === client.id);
-      if (index > -1) {
-        this.clients.splice(index, 1);
-        this.filteredClients = [...this.clients];
-        console.log('Cliente excluído com sucesso!');
-      }
+      this.loading = true;
+      this.customersService.deleteCustomer(client.id).subscribe({
+        next: () => {
+          this.loadClients(); // Reload list after deletion
+          console.log('Cliente excluído com sucesso!');
+        },
+        error: (error) => {
+          console.error('Erro ao excluir cliente:', error);
+          this.loading = false;
+        }
+      });
     }
   }
 
   toggleClientStatus(client: Client): void {
-    const newStatus = client.status === 'ativo' ? 'inativo' : 'ativo';
+    const newStatus = client.status === 'ativo' ? false : true;
     
-    // Simulating API call - in a real app, this would call the API
-    client.status = newStatus;
-    console.log(`Status do cliente alterado para ${newStatus}!`);
+    this.loading = true;
+    this.customersService.updateCustomer(client.id, { isActive: newStatus }).subscribe({
+      next: () => {
+        client.status = newStatus ? 'ativo' : 'inativo';
+        client.isActive = newStatus;
+        console.log(`Status do cliente alterado!`);
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Erro ao alterar status do cliente:', error);
+        this.loading = false;
+      }
+    });
   }
 
   viewContracts(client: Client): void {
