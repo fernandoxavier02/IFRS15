@@ -1,0 +1,1575 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@angular-devkit/build-angular": {
+      "name": "@angular-devkit/build-angular",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular-devkit/build-webpack",
+        "@angular/compiler-cli",
+        "@angular/localize",
+        "@angular/service-worker",
+        "@ngtools/webpack",
+        "esbuild",
+        "http-proxy-middleware",
+        "inquirer",
+        "webpack-dev-server"
+      ],
+      "effects": [
+        "@nx/angular",
+        "jest-preset-angular"
+      ],
+      "range": "<=19.2.14 || 20.0.0-next.0 - 20.0.0-rc.4",
+      "nodes": [
+        "node_modules/@angular-devkit/build-angular"
+      ],
+      "fixAvailable": {
+        "name": "@angular-devkit/build-angular",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular-devkit/build-webpack": {
+      "name": "@angular-devkit/build-webpack",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "webpack-dev-server"
+      ],
+      "effects": [
+        "@angular-devkit/build-angular"
+      ],
+      "range": "<=0.1703.17",
+      "nodes": [
+        "node_modules/@angular-devkit/build-webpack"
+      ],
+      "fixAvailable": {
+        "name": "@angular-devkit/build-angular",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/cdk": {
+      "name": "@angular/cdk",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular/common"
+      ],
+      "effects": [],
+      "range": "<=6.4.7 || 8.0.0-beta.0 - 17.3.10",
+      "nodes": [
+        "node_modules/@angular/cdk"
+      ],
+      "fixAvailable": {
+        "name": "@angular/cdk",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/cli": {
+      "name": "@angular/cli",
+      "severity": "low",
+      "isDirect": true,
+      "via": [
+        "inquirer"
+      ],
+      "effects": [],
+      "range": "<=1.4.0-rc.2 || 7.0.0-beta.0 - 18.1.0-rc.1",
+      "nodes": [
+        "node_modules/@angular/cli"
+      ],
+      "fixAvailable": {
+        "name": "@angular/cli",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/common": {
+      "name": "@angular/common",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        {
+          "source": 1111063,
+          "name": "@angular/common",
+          "dependency": "@angular/common",
+          "title": "Angular is Vulnerable to XSRF Token Leakage via Protocol-Relative URLs in Angular HTTP Client",
+          "url": "https://github.com/advisories/GHSA-58c5-g7wp-6w37",
+          "severity": "high",
+          "cwe": [
+            "CWE-201",
+            "CWE-359"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<19.2.16"
+        }
+      ],
+      "effects": [
+        "@angular/cdk",
+        "@angular/forms",
+        "@angular/material",
+        "@angular/platform-browser",
+        "@angular/platform-browser-dynamic",
+        "@angular/router",
+        "@angular/service-worker"
+      ],
+      "range": "<19.2.16",
+      "nodes": [
+        "node_modules/@angular/common"
+      ],
+      "fixAvailable": {
+        "name": "@angular/common",
+        "version": "21.0.5",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/compiler": {
+      "name": "@angular/compiler",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        {
+          "source": 1111180,
+          "name": "@angular/compiler",
+          "dependency": "@angular/compiler",
+          "title": "Angular Stored XSS Vulnerability via SVG Animation, SVG URL and MathML Attributes",
+          "url": "https://github.com/advisories/GHSA-v4hv-rgfq-gp49",
+          "severity": "high",
+          "cwe": [
+            "CWE-79"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<=18.2.14"
+        }
+      ],
+      "effects": [
+        "@angular/compiler-cli",
+        "@angular/localize",
+        "@angular/platform-browser-dynamic"
+      ],
+      "range": "<=18.2.14",
+      "nodes": [
+        "node_modules/@angular/compiler"
+      ],
+      "fixAvailable": {
+        "name": "@angular/compiler",
+        "version": "21.0.5",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/compiler-cli": {
+      "name": "@angular/compiler-cli",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular/compiler"
+      ],
+      "effects": [
+        "@angular-devkit/build-angular",
+        "@ngtools/webpack"
+      ],
+      "range": "<=18.2.14",
+      "nodes": [
+        "node_modules/@angular/compiler-cli"
+      ],
+      "fixAvailable": {
+        "name": "@angular/compiler-cli",
+        "version": "21.0.5",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/forms": {
+      "name": "@angular/forms",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular/common",
+        "@angular/platform-browser"
+      ],
+      "effects": [
+        "@angular/material"
+      ],
+      "range": "<=19.2.15",
+      "nodes": [
+        "node_modules/@angular/forms"
+      ],
+      "fixAvailable": {
+        "name": "@angular/forms",
+        "version": "21.0.5",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/localize": {
+      "name": "@angular/localize",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular/compiler",
+        "@angular/compiler-cli"
+      ],
+      "effects": [
+        "@angular-devkit/build-angular"
+      ],
+      "range": "10.0.0-next.0 - 18.2.14",
+      "nodes": [
+        "node_modules/@angular/localize"
+      ],
+      "fixAvailable": {
+        "name": "@angular/localize",
+        "version": "21.0.5",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/material": {
+      "name": "@angular/material",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular/cdk",
+        "@angular/common",
+        "@angular/forms",
+        "@angular/platform-browser"
+      ],
+      "effects": [],
+      "range": "<=6.4.7 || 8.0.0-beta.0 - 17.3.10",
+      "nodes": [
+        "node_modules/@angular/material"
+      ],
+      "fixAvailable": {
+        "name": "@angular/material",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/platform-browser": {
+      "name": "@angular/platform-browser",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular/common"
+      ],
+      "effects": [
+        "@angular/forms",
+        "@angular/material"
+      ],
+      "range": "<=19.2.15",
+      "nodes": [
+        "node_modules/@angular/platform-browser"
+      ],
+      "fixAvailable": {
+        "name": "@angular/platform-browser",
+        "version": "21.0.5",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/platform-browser-dynamic": {
+      "name": "@angular/platform-browser-dynamic",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular/common",
+        "@angular/compiler",
+        "@angular/platform-browser"
+      ],
+      "effects": [
+        "jest-preset-angular"
+      ],
+      "range": "<=19.2.15",
+      "nodes": [
+        "node_modules/@angular/platform-browser-dynamic"
+      ],
+      "fixAvailable": {
+        "name": "@angular/platform-browser-dynamic",
+        "version": "21.0.5",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/router": {
+      "name": "@angular/router",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular/common",
+        "@angular/platform-browser"
+      ],
+      "effects": [],
+      "range": "<=0.0.0-ROUTERPLACEHOLDER || 2.0.0-rc.0 - 19.2.15",
+      "nodes": [
+        "node_modules/@angular/router"
+      ],
+      "fixAvailable": {
+        "name": "@angular/router",
+        "version": "21.0.5",
+        "isSemVerMajor": true
+      }
+    },
+    "@angular/service-worker": {
+      "name": "@angular/service-worker",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular/common"
+      ],
+      "effects": [
+        "@angular-devkit/build-angular"
+      ],
+      "range": "5.1.0-beta.0 - 19.1.3 || 19.2.0-next.0 - 19.2.0-rc.0",
+      "nodes": [
+        "node_modules/@angular/service-worker"
+      ],
+      "fixAvailable": {
+        "name": "@angular/service-worker",
+        "version": "21.0.5",
+        "isSemVerMajor": true
+      }
+    },
+    "@nestjs/swagger": {
+      "name": "@nestjs/swagger",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "js-yaml"
+      ],
+      "effects": [],
+      "range": "5.3.0-next.1 - 11.2.1",
+      "nodes": [
+        "node_modules/@nestjs/swagger"
+      ],
+      "fixAvailable": {
+        "name": "@nestjs/swagger",
+        "version": "11.2.3",
+        "isSemVerMajor": true
+      }
+    },
+    "@ngtools/webpack": {
+      "name": "@ngtools/webpack",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "@angular/compiler-cli"
+      ],
+      "effects": [
+        "@angular-devkit/build-angular"
+      ],
+      "range": "<=1.2.13 || 7.0.0-beta.0 - 18.2.21",
+      "nodes": [
+        "node_modules/@ngtools/webpack"
+      ],
+      "fixAvailable": {
+        "name": "@angular-devkit/build-angular",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/angular": {
+      "name": "@nrwl/angular",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/angular"
+      ],
+      "effects": [
+        "@nx/angular"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 16.6.0-beta.0 - 19.5.2 || 19.6.0-beta.0 - 19.6.0-canary.20240723-c4f9d89",
+      "nodes": [
+        "node_modules/@nrwl/angular"
+      ],
+      "fixAvailable": {
+        "name": "@nx/angular",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/cypress": {
+      "name": "@nrwl/cypress",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/cypress"
+      ],
+      "effects": [
+        "@nx/cypress"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 17.0.4 - 17.0.5 || 17.2.0-beta.0 - 19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73",
+      "nodes": [
+        "node_modules/@nrwl/cypress"
+      ],
+      "fixAvailable": {
+        "name": "@nx/angular",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/devkit": {
+      "name": "@nrwl/devkit",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/devkit"
+      ],
+      "effects": [
+        "@nx/devkit"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 16.0.0-beta.0 - 18.3.0-canary.20240416-2ee9650",
+      "nodes": [
+        "node_modules/@nrwl/devkit",
+        "node_modules/@nx/eslint-plugin/node_modules/@nrwl/devkit",
+        "node_modules/@nx/eslint/node_modules/@nrwl/devkit",
+        "node_modules/@nx/jest/node_modules/@nrwl/devkit",
+        "node_modules/@nx/js/node_modules/@nrwl/devkit",
+        "node_modules/@nx/node/node_modules/@nrwl/devkit",
+        "node_modules/@nx/webpack/node_modules/@nrwl/devkit",
+        "node_modules/@nx/workspace/node_modules/@nrwl/devkit"
+      ],
+      "fixAvailable": {
+        "name": "@nx/eslint",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/eslint-plugin-nx": {
+      "name": "@nrwl/eslint-plugin-nx",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/eslint-plugin"
+      ],
+      "effects": [
+        "@nx/eslint-plugin"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 16.0.0-beta.0 - 18.3.0-canary.20240416-2ee9650",
+      "nodes": [
+        "node_modules/@nrwl/eslint-plugin-nx"
+      ],
+      "fixAvailable": {
+        "name": "@nx/eslint-plugin",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/jest": {
+      "name": "@nrwl/jest",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/jest"
+      ],
+      "effects": [
+        "@nx/jest"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 16.0.0-beta.0 - 18.3.0-canary.20240416-2ee9650",
+      "nodes": [
+        "node_modules/@nrwl/jest",
+        "node_modules/@nx/angular/node_modules/@nrwl/jest",
+        "node_modules/@nx/nest/node_modules/@nrwl/jest"
+      ],
+      "fixAvailable": {
+        "name": "@nx/jest",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/js": {
+      "name": "@nrwl/js",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/js"
+      ],
+      "effects": [
+        "@nx/js"
+      ],
+      "range": "0.0.0-pr-22179-271588f || 16.0.0-beta.0 - 19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73",
+      "nodes": [
+        "node_modules/@nrwl/js",
+        "node_modules/@nx/angular/node_modules/@nrwl/js",
+        "node_modules/@nx/cypress/node_modules/@nrwl/js",
+        "node_modules/@nx/nest/node_modules/@nrwl/js",
+        "node_modules/@nx/web/node_modules/@nrwl/js"
+      ],
+      "fixAvailable": {
+        "name": "@nx/js",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/nest": {
+      "name": "@nrwl/nest",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/nest"
+      ],
+      "effects": [
+        "@nx/nest"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 17.0.4 - 17.0.5 || 17.2.0-beta.0 - 19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73",
+      "nodes": [
+        "node_modules/@nrwl/nest"
+      ],
+      "fixAvailable": {
+        "name": "@nx/nest",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/node": {
+      "name": "@nrwl/node",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/node"
+      ],
+      "effects": [
+        "@nx/node"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 17.0.4 - 17.0.5 || 17.2.0-beta.0 - 19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73",
+      "nodes": [
+        "node_modules/@nrwl/node",
+        "node_modules/@nx/nest/node_modules/@nrwl/node"
+      ],
+      "fixAvailable": {
+        "name": "@nx/node",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/tao": {
+      "name": "@nrwl/tao",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "nx"
+      ],
+      "effects": [
+        "nx"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 14.3.3 - 19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73",
+      "nodes": [
+        "node_modules/@nrwl/tao",
+        "node_modules/@nx/angular/node_modules/@nrwl/tao",
+        "node_modules/@nx/cypress/node_modules/@nrwl/tao",
+        "node_modules/@nx/nest/node_modules/@nrwl/tao",
+        "node_modules/@nx/web/node_modules/@nrwl/tao"
+      ],
+      "fixAvailable": {
+        "name": "nx",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/web": {
+      "name": "@nrwl/web",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/web"
+      ],
+      "effects": [
+        "@nx/web"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 16.0.0-beta.0 - 18.3.0-canary.20240416-2ee9650",
+      "nodes": [
+        "node_modules/@nrwl/web"
+      ],
+      "fixAvailable": {
+        "name": "@nx/angular",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/webpack": {
+      "name": "@nrwl/webpack",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/webpack"
+      ],
+      "effects": [
+        "@nx/webpack"
+      ],
+      "range": "<=0.0.0-pr-27085-57245c5 || 16.0.0-beta.0 - 19.6.0-rc.0",
+      "nodes": [
+        "node_modules/@nrwl/webpack",
+        "node_modules/@nx/angular/node_modules/@nrwl/webpack"
+      ],
+      "fixAvailable": {
+        "name": "@nx/webpack",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nrwl/workspace": {
+      "name": "@nrwl/workspace",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/workspace"
+      ],
+      "effects": [
+        "@nx/workspace"
+      ],
+      "range": "<=0.0.0-pr-31222-862e973 || 16.0.0-beta.0 - 19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73",
+      "nodes": [
+        "node_modules/@nrwl/workspace",
+        "node_modules/@nx/angular/node_modules/@nrwl/workspace",
+        "node_modules/@nx/cypress/node_modules/@nrwl/workspace",
+        "node_modules/@nx/nest/node_modules/@nrwl/workspace",
+        "node_modules/@nx/web/node_modules/@nrwl/workspace"
+      ],
+      "fixAvailable": {
+        "name": "@nx/workspace",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/angular": {
+      "name": "@nx/angular",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@angular-devkit/build-angular",
+        "@nrwl/angular",
+        "@nx/cypress",
+        "@nx/devkit",
+        "@nx/eslint",
+        "@nx/jest",
+        "@nx/js",
+        "@nx/web",
+        "@nx/webpack",
+        "@nx/workspace",
+        "esbuild"
+      ],
+      "effects": [
+        "@nrwl/angular"
+      ],
+      "range": "<=20.2.0-rc.0",
+      "nodes": [
+        "node_modules/@nx/angular"
+      ],
+      "fixAvailable": {
+        "name": "@nx/angular",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/cypress": {
+      "name": "@nx/cypress",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nrwl/cypress",
+        "@nx/devkit",
+        "@nx/eslint",
+        "@nx/js"
+      ],
+      "effects": [
+        "@nrwl/cypress",
+        "@nx/angular"
+      ],
+      "range": "<=19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/cypress"
+      ],
+      "fixAvailable": {
+        "name": "@nx/angular",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/devkit": {
+      "name": "@nx/devkit",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nrwl/devkit",
+        "nx"
+      ],
+      "effects": [
+        "@nrwl/devkit",
+        "@nx/angular",
+        "@nx/cypress",
+        "@nx/eslint",
+        "@nx/eslint-plugin",
+        "@nx/jest",
+        "@nx/js",
+        "@nx/nest",
+        "@nx/node",
+        "@nx/web",
+        "@nx/webpack",
+        "@nx/workspace"
+      ],
+      "range": "<=18.3.0-canary.20240416-2ee9650 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/devkit",
+        "node_modules/@nx/eslint-plugin/node_modules/@nx/devkit",
+        "node_modules/@nx/eslint/node_modules/@nx/devkit",
+        "node_modules/@nx/jest/node_modules/@nx/devkit",
+        "node_modules/@nx/js/node_modules/@nx/devkit",
+        "node_modules/@nx/node/node_modules/@nx/devkit",
+        "node_modules/@nx/webpack/node_modules/@nx/devkit",
+        "node_modules/@nx/workspace/node_modules/@nx/devkit"
+      ],
+      "fixAvailable": {
+        "name": "@nx/eslint",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/eslint": {
+      "name": "@nx/eslint",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@nx/devkit",
+        "@nx/js",
+        "@nx/linter",
+        "js-yaml"
+      ],
+      "effects": [
+        "@nx/angular",
+        "@nx/cypress",
+        "@nx/linter",
+        "@nx/nest",
+        "@nx/node"
+      ],
+      "range": "<=19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73",
+      "nodes": [
+        "node_modules/@nx/angular/node_modules/@nx/eslint",
+        "node_modules/@nx/cypress/node_modules/@nx/eslint",
+        "node_modules/@nx/eslint",
+        "node_modules/@nx/nest/node_modules/@nx/eslint"
+      ],
+      "fixAvailable": {
+        "name": "@nx/eslint",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/eslint-plugin": {
+      "name": "@nx/eslint-plugin",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@nrwl/eslint-plugin-nx",
+        "@nx/devkit",
+        "@nx/js"
+      ],
+      "effects": [
+        "@nrwl/eslint-plugin-nx"
+      ],
+      "range": "<=19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/eslint-plugin"
+      ],
+      "fixAvailable": {
+        "name": "@nx/eslint-plugin",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/jest": {
+      "name": "@nx/jest",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@nrwl/jest",
+        "@nx/devkit",
+        "@nx/js"
+      ],
+      "effects": [
+        "@nrwl/jest",
+        "@nx/angular"
+      ],
+      "range": "<=19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/angular/node_modules/@nx/jest",
+        "node_modules/@nx/jest",
+        "node_modules/@nx/nest/node_modules/@nx/jest"
+      ],
+      "fixAvailable": {
+        "name": "@nx/jest",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/js": {
+      "name": "@nx/js",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@nrwl/js",
+        "@nx/devkit",
+        "@nx/workspace"
+      ],
+      "effects": [
+        "@nrwl/js",
+        "@nx/cypress",
+        "@nx/eslint",
+        "@nx/eslint-plugin",
+        "@nx/jest",
+        "@nx/nest",
+        "@nx/node",
+        "@nx/web",
+        "@nx/webpack"
+      ],
+      "range": "<=19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/angular/node_modules/@nx/js",
+        "node_modules/@nx/cypress/node_modules/@nx/js",
+        "node_modules/@nx/js",
+        "node_modules/@nx/nest/node_modules/@nx/js",
+        "node_modules/@nx/web/node_modules/@nx/js"
+      ],
+      "fixAvailable": {
+        "name": "@nx/js",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/linter": {
+      "name": "@nx/linter",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nx/eslint"
+      ],
+      "effects": [],
+      "range": "0.0.0-pr-22179-271588f || 17.0.4 - 17.0.5 || 17.2.0-beta.0 - 19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73",
+      "nodes": [
+        "node_modules/@nx/angular/node_modules/@nx/linter",
+        "node_modules/@nx/cypress/node_modules/@nx/linter",
+        "node_modules/@nx/linter",
+        "node_modules/@nx/nest/node_modules/@nx/linter"
+      ],
+      "fixAvailable": true
+    },
+    "@nx/nest": {
+      "name": "@nx/nest",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@nrwl/nest",
+        "@nx/devkit",
+        "@nx/eslint",
+        "@nx/js",
+        "@nx/node"
+      ],
+      "effects": [
+        "@nrwl/nest"
+      ],
+      "range": "<=19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/nest"
+      ],
+      "fixAvailable": {
+        "name": "@nx/nest",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/node": {
+      "name": "@nx/node",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@nrwl/node",
+        "@nx/devkit",
+        "@nx/eslint",
+        "@nx/jest",
+        "@nx/js"
+      ],
+      "effects": [
+        "@nrwl/node"
+      ],
+      "range": "<=19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/nest/node_modules/@nx/node",
+        "node_modules/@nx/node"
+      ],
+      "fixAvailable": {
+        "name": "@nx/node",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/web": {
+      "name": "@nx/web",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        "@nrwl/web",
+        "@nx/devkit",
+        "@nx/js"
+      ],
+      "effects": [
+        "@nrwl/web",
+        "@nx/angular"
+      ],
+      "range": "<=19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/web"
+      ],
+      "fixAvailable": {
+        "name": "@nx/angular",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/webpack": {
+      "name": "@nx/webpack",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@nrwl/webpack",
+        "@nx/devkit",
+        "@nx/js",
+        "webpack-dev-server"
+      ],
+      "effects": [
+        "@nrwl/webpack",
+        "@nx/angular"
+      ],
+      "range": "<=19.6.0-rc.0 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/angular/node_modules/@nx/webpack",
+        "node_modules/@nx/webpack"
+      ],
+      "fixAvailable": {
+        "name": "@nx/webpack",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@nx/workspace": {
+      "name": "@nx/workspace",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@nrwl/workspace",
+        "@nx/devkit",
+        "nx"
+      ],
+      "effects": [
+        "@nrwl/workspace",
+        "@nx/angular",
+        "@nx/js"
+      ],
+      "range": "<=19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/angular/node_modules/@nx/workspace",
+        "node_modules/@nx/cypress/node_modules/@nx/workspace",
+        "node_modules/@nx/nest/node_modules/@nx/workspace",
+        "node_modules/@nx/web/node_modules/@nx/workspace",
+        "node_modules/@nx/workspace"
+      ],
+      "fixAvailable": {
+        "name": "@nx/workspace",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "@pact-foundation/pact": {
+      "name": "@pact-foundation/pact",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@pact-foundation/pact-core"
+      ],
+      "effects": [],
+      "range": "10.0.0-beta.1 - 12.5.2",
+      "nodes": [
+        "node_modules/@pact-foundation/pact"
+      ],
+      "fixAvailable": {
+        "name": "@pact-foundation/pact",
+        "version": "16.0.2",
+        "isSemVerMajor": true
+      }
+    },
+    "@pact-foundation/pact-core": {
+      "name": "@pact-foundation/pact-core",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "cross-spawn"
+      ],
+      "effects": [
+        "@pact-foundation/pact"
+      ],
+      "range": "13.1.1 - 14.3.8",
+      "nodes": [
+        "node_modules/@pact-foundation/pact-core"
+      ],
+      "fixAvailable": {
+        "name": "@pact-foundation/pact",
+        "version": "16.0.2",
+        "isSemVerMajor": true
+      }
+    },
+    "cross-spawn": {
+      "name": "cross-spawn",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1104664,
+          "name": "cross-spawn",
+          "dependency": "cross-spawn",
+          "title": "Regular Expression Denial of Service (ReDoS) in cross-spawn",
+          "url": "https://github.com/advisories/GHSA-3xgq-45jj-v275",
+          "severity": "high",
+          "cwe": [
+            "CWE-1333"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=7.0.0 <7.0.5"
+        }
+      ],
+      "effects": [
+        "@pact-foundation/pact-core"
+      ],
+      "range": "7.0.0 - 7.0.4",
+      "nodes": [
+        "node_modules/cross-spawn"
+      ],
+      "fixAvailable": {
+        "name": "@pact-foundation/pact",
+        "version": "16.0.2",
+        "isSemVerMajor": true
+      }
+    },
+    "esbuild": {
+      "name": "esbuild",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1102341,
+          "name": "esbuild",
+          "dependency": "esbuild",
+          "title": "esbuild enables any website to send any requests to the development server and read the response",
+          "url": "https://github.com/advisories/GHSA-67mh-4wv8-2f99",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-346"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N"
+          },
+          "range": "<=0.24.2"
+        }
+      ],
+      "effects": [
+        "@angular-devkit/build-angular",
+        "@nx/angular",
+        "vite"
+      ],
+      "range": "<=0.24.2",
+      "nodes": [
+        "node_modules/@angular-devkit/build-angular/node_modules/esbuild",
+        "node_modules/esbuild",
+        "node_modules/vite/node_modules/esbuild"
+      ],
+      "fixAvailable": {
+        "name": "@nx/angular",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "external-editor": {
+      "name": "external-editor",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        "tmp"
+      ],
+      "effects": [
+        "inquirer"
+      ],
+      "range": ">=1.1.1",
+      "nodes": [
+        "node_modules/external-editor"
+      ],
+      "fixAvailable": {
+        "name": "@angular-devkit/build-angular",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "glob": {
+      "name": "glob",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1109842,
+          "name": "glob",
+          "dependency": "glob",
+          "title": "glob CLI: Command injection via -c/--cmd executes matches with shell:true",
+          "url": "https://github.com/advisories/GHSA-5j98-mcp5-4vw2",
+          "severity": "high",
+          "cwe": [
+            "CWE-78"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H"
+          },
+          "range": ">=10.2.0 <10.5.0"
+        }
+      ],
+      "effects": [],
+      "range": "10.2.0 - 10.4.5",
+      "nodes": [
+        "node_modules/@npmcli/package-json/node_modules/glob",
+        "node_modules/cacache/node_modules/glob",
+        "node_modules/node-gyp/node_modules/glob",
+        "node_modules/read-package-json/node_modules/glob"
+      ],
+      "fixAvailable": true
+    },
+    "http-proxy-middleware": {
+      "name": "http-proxy-middleware",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1104105,
+          "name": "http-proxy-middleware",
+          "dependency": "http-proxy-middleware",
+          "title": "http-proxy-middleware allows fixRequestBody to proceed even if bodyParser has failed",
+          "url": "https://github.com/advisories/GHSA-9gqv-wp59-fq42",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-754"
+          ],
+          "cvss": {
+            "score": 4,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:N/I:L/A:N"
+          },
+          "range": ">=1.3.0 <2.0.9"
+        }
+      ],
+      "effects": [
+        "@angular-devkit/build-angular"
+      ],
+      "range": "1.3.0 - 2.0.8",
+      "nodes": [
+        "node_modules/http-proxy-middleware"
+      ],
+      "fixAvailable": {
+        "name": "@angular-devkit/build-angular",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "inquirer": {
+      "name": "inquirer",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        "external-editor"
+      ],
+      "effects": [
+        "@angular-devkit/build-angular",
+        "@angular/cli"
+      ],
+      "range": "3.0.0 - 8.2.6 || 9.0.0 - 9.3.7",
+      "nodes": [
+        "node_modules/inquirer"
+      ],
+      "fixAvailable": {
+        "name": "@angular-devkit/build-angular",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "jest-preset-angular": {
+      "name": "jest-preset-angular",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@angular-devkit/build-angular",
+        "@angular/compiler-cli",
+        "@angular/platform-browser-dynamic"
+      ],
+      "effects": [],
+      "range": "12.0.0-next.0 - 14.3.3",
+      "nodes": [
+        "node_modules/jest-preset-angular"
+      ],
+      "fixAvailable": {
+        "name": "jest-preset-angular",
+        "version": "16.0.0",
+        "isSemVerMajor": true
+      }
+    },
+    "js-yaml": {
+      "name": "js-yaml",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1109801,
+          "name": "js-yaml",
+          "dependency": "js-yaml",
+          "title": "js-yaml has prototype pollution in merge (<<)",
+          "url": "https://github.com/advisories/GHSA-mh29-5h37-fv8m",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-1321"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": "<3.14.2"
+        },
+        {
+          "source": 1109802,
+          "name": "js-yaml",
+          "dependency": "js-yaml",
+          "title": "js-yaml has prototype pollution in merge (<<)",
+          "url": "https://github.com/advisories/GHSA-mh29-5h37-fv8m",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-1321"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": ">=4.0.0 <4.1.1"
+        }
+      ],
+      "effects": [
+        "@nestjs/swagger",
+        "@nx/eslint",
+        "nx"
+      ],
+      "range": "<3.14.2 || >=4.0.0 <4.1.1",
+      "nodes": [
+        "node_modules/@istanbuljs/load-nyc-config/node_modules/js-yaml",
+        "node_modules/@yarnpkg/parsers/node_modules/js-yaml",
+        "node_modules/js-yaml"
+      ],
+      "fixAvailable": {
+        "name": "@nx/eslint",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "jws": {
+      "name": "jws",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1111244,
+          "name": "jws",
+          "dependency": "jws",
+          "title": "auth0/node-jws Improperly Verifies HMAC Signature",
+          "url": "https://github.com/advisories/GHSA-869p-cjfg-cm3x",
+          "severity": "high",
+          "cwe": [
+            "CWE-347"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+          },
+          "range": "<3.2.3"
+        }
+      ],
+      "effects": [],
+      "range": "<3.2.3",
+      "nodes": [
+        "node_modules/jws"
+      ],
+      "fixAvailable": true
+    },
+    "node-forge": {
+      "name": "node-forge",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1110996,
+          "name": "node-forge",
+          "dependency": "node-forge",
+          "title": "node-forge has ASN.1 Unbounded Recursion",
+          "url": "https://github.com/advisories/GHSA-554w-wpv2-vw27",
+          "severity": "high",
+          "cwe": [
+            "CWE-674"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<1.3.2"
+        },
+        {
+          "source": 1110998,
+          "name": "node-forge",
+          "dependency": "node-forge",
+          "title": "node-forge has an Interpretation Conflict vulnerability via its ASN.1 Validator Desynchronization",
+          "url": "https://github.com/advisories/GHSA-5gfm-wpxj-wjgq",
+          "severity": "high",
+          "cwe": [
+            "CWE-436"
+          ],
+          "cvss": {
+            "score": 8.6,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:N"
+          },
+          "range": "<1.3.2"
+        },
+        {
+          "source": 1111068,
+          "name": "node-forge",
+          "dependency": "node-forge",
+          "title": "node-forge is vulnerable to ASN.1 OID Integer Truncation",
+          "url": "https://github.com/advisories/GHSA-65ch-62r8-g69g",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-190"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": "<1.3.2"
+        }
+      ],
+      "effects": [],
+      "range": "<=1.3.1",
+      "nodes": [
+        "node_modules/node-forge"
+      ],
+      "fixAvailable": true
+    },
+    "nx": {
+      "name": "nx",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        "@nrwl/tao",
+        "js-yaml"
+      ],
+      "effects": [
+        "@nrwl/tao",
+        "@nx/devkit",
+        "@nx/workspace"
+      ],
+      "range": "14.3.3 - 19.0.7 || 19.1.0-beta.0 - 19.1.0-canary.20240524-12c6a73 || 19.8.15",
+      "nodes": [
+        "node_modules/@nx/angular/node_modules/nx",
+        "node_modules/@nx/cypress/node_modules/nx",
+        "node_modules/@nx/nest/node_modules/nx",
+        "node_modules/@nx/web/node_modules/nx",
+        "node_modules/nx"
+      ],
+      "fixAvailable": {
+        "name": "nx",
+        "version": "22.2.1",
+        "isSemVerMajor": true
+      }
+    },
+    "tmp": {
+      "name": "tmp",
+      "severity": "low",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1109537,
+          "name": "tmp",
+          "dependency": "tmp",
+          "title": "tmp allows arbitrary temporary file / directory write via symbolic link `dir` parameter",
+          "url": "https://github.com/advisories/GHSA-52f5-9888-hmc6",
+          "severity": "low",
+          "cwe": [
+            "CWE-59"
+          ],
+          "cvss": {
+            "score": 2.5,
+            "vectorString": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:N/I:L/A:N"
+          },
+          "range": "<=0.2.3"
+        }
+      ],
+      "effects": [
+        "external-editor"
+      ],
+      "range": "<=0.2.3",
+      "nodes": [
+        "node_modules/external-editor/node_modules/tmp"
+      ],
+      "fixAvailable": {
+        "name": "@angular-devkit/build-angular",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    },
+    "validator": {
+      "name": "validator",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1109241,
+          "name": "validator",
+          "dependency": "validator",
+          "title": "validator.js has a URL validation bypass vulnerability in its isURL function",
+          "url": "https://github.com/advisories/GHSA-9965-vmph-33xx",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-79"
+          ],
+          "cvss": {
+            "score": 6.1,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:L/I:L/A:N"
+          },
+          "range": "<13.15.20"
+        },
+        {
+          "source": 1111154,
+          "name": "validator",
+          "dependency": "validator",
+          "title": "Validator is Vulnerable to Incomplete Filtering of One or More Instances of Special Elements",
+          "url": "https://github.com/advisories/GHSA-vghf-hv5q-vc2g",
+          "severity": "high",
+          "cwe": [
+            "CWE-792"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": "<13.15.22"
+        }
+      ],
+      "effects": [],
+      "range": "<=13.15.20",
+      "nodes": [
+        "node_modules/validator"
+      ],
+      "fixAvailable": true
+    },
+    "vite": {
+      "name": "vite",
+      "severity": "moderate",
+      "isDirect": true,
+      "via": [
+        {
+          "source": 1109131,
+          "name": "vite",
+          "dependency": "vite",
+          "title": "vite allows server.fs.deny bypass via backslash on Windows",
+          "url": "https://github.com/advisories/GHSA-93m4-6634-74q7",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-22"
+          ],
+          "cvss": {
+            "score": 0,
+            "vectorString": null
+          },
+          "range": ">=5.2.6 <=5.4.20"
+        },
+        "esbuild"
+      ],
+      "effects": [],
+      "range": "0.11.0 - 6.1.6",
+      "nodes": [
+        "node_modules/vite"
+      ],
+      "fixAvailable": true
+    },
+    "webpack-dev-server": {
+      "name": "webpack-dev-server",
+      "severity": "moderate",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1108429,
+          "name": "webpack-dev-server",
+          "dependency": "webpack-dev-server",
+          "title": "webpack-dev-server users' source code may be stolen when they access a malicious web site with non-Chromium based browser",
+          "url": "https://github.com/advisories/GHSA-9jgg-88mc-972h",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-346"
+          ],
+          "cvss": {
+            "score": 6.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N"
+          },
+          "range": "<=5.2.0"
+        },
+        {
+          "source": 1108430,
+          "name": "webpack-dev-server",
+          "dependency": "webpack-dev-server",
+          "title": "webpack-dev-server users' source code may be stolen when they access a malicious web site",
+          "url": "https://github.com/advisories/GHSA-4v9v-hfq4-rm2v",
+          "severity": "moderate",
+          "cwe": [
+            "CWE-749"
+          ],
+          "cvss": {
+            "score": 5.3,
+            "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:U/C:H/I:N/A:N"
+          },
+          "range": "<=5.2.0"
+        }
+      ],
+      "effects": [
+        "@angular-devkit/build-angular",
+        "@angular-devkit/build-webpack",
+        "@nx/webpack"
+      ],
+      "range": "<=5.2.0",
+      "nodes": [
+        "node_modules/webpack-dev-server"
+      ],
+      "fixAvailable": {
+        "name": "@angular-devkit/build-angular",
+        "version": "21.0.3",
+        "isSemVerMajor": true
+      }
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 4,
+      "moderate": 33,
+      "high": 21,
+      "critical": 0,
+      "total": 58
+    },
+    "dependencies": {
+      "prod": 690,
+      "dev": 1573,
+      "optional": 163,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 2265
+    }
+  }
+}
