@@ -9,6 +9,11 @@ import * as cors from 'cors';
 import * as compression from 'compression';
 import { json, urlencoded } from 'express';
 
+// Import global filters and interceptors
+import { AllExceptionsFilter } from './common/filters/http-exception.filter';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
+
 // Initialize OpenTelemetry before importing any other modules
 import './telemetry/telemetry';
 
@@ -74,6 +79,13 @@ async function bootstrap() {
       disableErrorMessages: configService.get('NODE_ENV') === 'production',
     }),
   );
+
+  // Global exception filter
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  // Global interceptors
+  app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalInterceptors(new TimeoutInterceptor());
 
   // Swagger documentation
   const config = new DocumentBuilder()
