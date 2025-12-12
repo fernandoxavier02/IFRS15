@@ -1,7 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -19,12 +19,18 @@ import { ConfirmDialogComponent } from './clients/clients-list/clients-list.comp
 
 // Services
 import { ApiService, ClientsApiService, ContractsApiService, DACApiService, PoliciesApiService } from './shared/services/api.service';
+import { CustomersService } from './shared/services/customers.service';
+import { ContractsService } from './shared/services/contracts.service';
 import { AuthService } from './shared/guards/rbac.guard';
 import { ValidationService } from './shared/services/validation.service';
 import { I18nService } from './shared/services/i18n.service';
 
 // Guards
 import { RBACGuard } from './shared/guards/rbac.guard';
+
+// Interceptors
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+import { LoadingInterceptor } from './shared/interceptors/loading.interceptor';
 
 const routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -59,15 +65,32 @@ const routes = [
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [
+    // Legacy API Services
     ApiService,
     ClientsApiService,
     ContractsApiService,
     DACApiService,
     PoliciesApiService,
+    // New API Services
+    CustomersService,
+    ContractsService,
+    // Other Services
     AuthService,
     ValidationService,
     I18nService,
-    RBACGuard
+    // Guards
+    RBACGuard,
+    // HTTP Interceptors
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoadingInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })
